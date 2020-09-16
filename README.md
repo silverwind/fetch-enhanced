@@ -31,7 +31,7 @@ await promise; // returns null
 
 - `options` Object
   - `timeout`: request timeout in milliseconds
-  - any valid [`node-fetch`](https://github.com/node-fetch/node-fetch#options) option
+  - any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
 
 Returns a Promise with a `.cancel()` method that can be called to cancel the outstanding request in which case the promise will resolve to `null`.
 
