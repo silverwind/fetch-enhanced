@@ -24,6 +24,10 @@ await fetch("https://google.com", {timeout: 10000});
 const promise = fetch("https://google.com");
 promise.cancel();
 await promise; // returns null
+
+// proxy from environment
+process.env.HTTPS_PROXY = "https://myproxy.com";
+await fetch("https://google.com");
 ```
 
 ## API
