@@ -44,8 +44,8 @@ module.exports = ({fetch}) => {
         if (timeoutId) clearTimeout(timeoutId);
         resolve(...args);
       }).catch(err => {
-        if (err.name === "AbortError") return resolve(null);
         if (timeoutId) clearTimeout(timeoutId);
+        if (err.name === "AbortError") return resolve(null);
         reject(err);
       });
     });
