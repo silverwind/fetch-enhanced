@@ -1,34 +1,38 @@
-lint:
+node_modules: yarn.lock
+	@yarn -s --pure-lockfile
+	@touch node_modules
+
+deps: node_modules
+
+update: node_modules
+	yarn -s run updates -cu
+	rm -rf node_modules
+	yarn -s
+	@touch yarn.lock
+
+lint: node_modules
 	yarn -s run eslint --color .
 
-test: lint
+test: node_modules lint
 	yarn -s run jest --color
 
-unittest:
+unittest: node_modules
 	yarn -s run jest --color --watchAll
 
-publish:
+publish: node_modules
 	git push -u --tags origin master
 	npm publish
 
-deps:
-	rm -rf node_modules
-	yarn
-
-update:
-	node updates -cu
-	@$(MAKE) --no-print-directory deps
-
-patch: test
+patch: node_modules test
 	yarn -s run versions -C patch
 	@$(MAKE) --no-print-directory publish
 
-minor: test
+minor: node_modules test
 	yarn -s run versions -C minor
 	@$(MAKE) --no-print-directory publish
 
-major: test
+major: node_modules test
 	yarn -s run versions -C major
 	@$(MAKE) --no-print-directory publish
 
-.PHONY: lint test unittest build publish deps update patch minor major
+.PHONY: lint test unittest publish deps update patch minor major
