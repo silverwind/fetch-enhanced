@@ -1,0 +1,41 @@
+{
+  "name": "fetch-enhanced",
+  "version": "1.0.0",
+  "description": "fetch wrapper with support for automatic HTTP proxy, timeout and cancellation",
+  "author": "silverwind",
+  "repository": "silverwind/fetch-enhanced",
+  "license": "BSD-2-Clause",
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "keywords": [
+    "fetch",
+    "fetch-enhanced"
+  ],
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "abort-controller": "3.0.0",
+    "http-proxy-agent": "4.0.1",
+    "https-proxy-agent": "5.0.0",
+    "proxy-from-env": "1.1.0"
+  },
+  "devDependencies": {
+    "eslint": "7.9.0",
+    "eslint-config-silverwind": "18.0.8",
+    "jest": "26.4.2",
+    "node-fetch": "2.6.1",
+    "proxy": "1.0.2",
+    "restana": "4.7.4",
+    "updates": "10.3.6",
+    "versions": "8.4.3"
+  },
+  "jest": {
+    "verbose": false,
+    "testTimeout": 60000
+  }
+}
