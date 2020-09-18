@@ -14,7 +14,8 @@ lint: node_modules
 	yarn -s run eslint --color .
 
 test: node_modules lint
-	yarn -s run jest --color
+	@# detectOpenHandles to prevent jest warning for agentkeepalive
+	yarn -s run jest --color --detectOpenHandles
 
 unittest: node_modules
 	yarn -s run jest --color --watchAll

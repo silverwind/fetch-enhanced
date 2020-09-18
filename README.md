@@ -4,7 +4,7 @@
 `fetch-enhanced` wraps a user-provided `fetch` implementation like [node-fetch](https://github.com/node-fetch/node-fetch) and adds the following features:
 
 - HTTP proxy discovery from standard environment variables
-- A `timeout` option
+- `timeout` and `maxSockets` options
 
 ## Usage
 
@@ -38,6 +38,7 @@ await promise; // returns null
 
 - `options` *Object*
   - `timeout`: *number* request timeout in milliseconds
+  - `maxSockets`: *number* maximum number of parallel requests, default: `64`
   - any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
 
 When the `agent` option is specified, HTTP proxy will no longer be discovered.
