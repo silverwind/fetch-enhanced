@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-const {getProxyForUrl} = require("proxy-from-env");
 const HttpAgent = require("agentkeepalive");
-const {HttpsAgent} = require("agentkeepalive");
 const HttpProxyAgent = require("http-proxy-agent");
 const HttpsProxyAgent = require("https-proxy-agent");
+const {getProxyForUrl} = require("proxy-from-env");
+const {HttpsAgent} = require("agentkeepalive");
 
 const agentCache = {};
 
