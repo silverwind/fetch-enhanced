@@ -7,6 +7,10 @@ const {HttpsAgent} = require("agentkeepalive");
 
 const agentCache = {};
 
+const defaultAgentOpts = {
+  maxSockets: 64,
+};
+
 function getAgent(url, agentOpts) {
   const proxyUrl = getProxyForUrl(url);
   const first5 = url.substring(0, 5);
@@ -33,11 +37,11 @@ function getAgent(url, agentOpts) {
 }
 
 module.exports = fetchImplementation => {
-  return function fetch(url, {timeout, maxSockets = 64, ...opts} = {}) {
+  return function fetch(url, {timeout, agentOpts = {}, ...opts} = {}) {
     return new Promise((resolve, reject) => {
       // proxy
       if (!("agent" in opts)) {
-        opts.agent = getAgent(url, {maxSockets});
+        opts.agent = getAgent(url, {...defaultAgentOpts, ...agentOpts});
       }
 
       // timeout
