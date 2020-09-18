@@ -33,8 +33,8 @@ function getAgent(url, agentOpts) {
   }
 }
 
-module.exports = fetch => {
-  return (url, {timeout, maxSockets = 64, ...opts} = {}) => {
+module.exports = fetchImplementation => {
+  return function fetch(url, {timeout, maxSockets = 64, ...opts} = {}) {
     return new Promise((resolve, reject) => {
       // proxy
       if (!("agent" in opts)) {
@@ -51,7 +51,7 @@ module.exports = fetch => {
         }, timeout);
       }
 
-      fetch(url, opts).then(res => {
+      fetchImplementation(url, opts).then(res => {
         if (timeoutId) clearTimeout(timeoutId);
         resolve(res);
       }).catch(err => {
