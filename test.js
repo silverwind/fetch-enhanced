@@ -8,7 +8,7 @@ const restana = require("restana");
 const {isIPv6} = require("net");
 const {promisify} = require("util");
 
-const fetch = fetchEnhanced({fetch: nodeFetch});
+const fetch = fetchEnhanced(nodeFetch);
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 function makeUrl(server) {

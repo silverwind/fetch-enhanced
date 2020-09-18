@@ -14,7 +14,7 @@ npm i fetch-enhanced
 ```js
 const fetchEnhanced = require("fetch-enhanced");
 const nodeFetch = require("node-fetch");
-const fetch = fetchEnhanced({fetch: nodeFetch});
+const fetch = fetchEnhanced(nodeFetch);
 
 // proxy from environment
 process.env.HTTPS_PROXY = "https://myproxy.com";
@@ -30,6 +30,10 @@ await promise; // returns null
 ```
 
 ## API
+### fetchEnhanced(fetchImplementation)
+
+- fetchImplementation: *Function* any fetch implementation that supports a `agent` function option like [`node-fetch`](https://github.com/node-fetch/node-fetch)
+
 ### fetch(url, options)
 
 - `options` *Object*

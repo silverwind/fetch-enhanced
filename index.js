@@ -3,7 +3,7 @@ const {getProxyForUrl} = require("proxy-from-env");
 const HttpProxyAgent = require("http-proxy-agent");
 const HttpsProxyAgent = require("https-proxy-agent");
 
-module.exports = ({fetch}) => {
+module.exports = (fetch) => {
   return (url, {timeout, ...opts} = {}) => {
     return new Promise((resolve, reject) => {
       // proxy
