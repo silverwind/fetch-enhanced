@@ -6,6 +6,8 @@
 - HTTP proxy discovery from standard environment variables
 - `timeout` and `maxSockets` options
 
+Generally any `fetch`-like module that takes `(url, options)` arguments and a `agent` option should work, even `got`.
+
 ## Usage
 
 ```bash
