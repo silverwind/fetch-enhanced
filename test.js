@@ -14,17 +14,19 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 function makeUrl(server) {
   const {address, port} = server.address();
   const hostname = isIPv6(address) ? `[${address}]` : address;
-  return Object.assign(new URL("http://x"), {hostname, port}).toString().replace(/\/$/, "");
+  return String(Object.assign(new URL("http://x"), {hostname, port})).replace(/\/$/, "");
 }
 
 let testServer, testUrl;
 
+const defaultRoute = async (_req, res) => {
+  await sleep(500);
+  res.statusCode = 204;
+  res.end();
+};
+
 beforeAll(async () => {
-  testServer = await restana({defaultRoute: async (_req, res) => {
-    await sleep(500);
-    res.statusCode = 204;
-    res.end();
-  }});
+  testServer = await restana({defaultRoute});
   testServer = await testServer.start(0, "127.0.0.1");
   testUrl = makeUrl(testServer);
 });
