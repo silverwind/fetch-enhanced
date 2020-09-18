@@ -4,7 +4,6 @@ const fetchEnhanced = require(".");
 const http = require("http");
 const nodeFetch = require("node-fetch");
 const proxy = require("proxy");
-const restana = require("restana");
 const {isIPv6} = require("net");
 const {promisify} = require("util");
 
@@ -13,21 +12,21 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 function makeUrl(server) {
   const {address, port} = server.address();
-  const hostname = isIPv6(address) ? `[${address}]` : address;
+  const hostname = isIPv6(address) ? `[${address}]` : address; // ipv6 compat
   return String(Object.assign(new URL("http://x"), {hostname, port})).replace(/\/$/, "");
 }
 
 let testServer, testUrl;
 
-const defaultRoute = async (_req, res) => {
+async function onRequest(_req, res) {
   await sleep(500);
   res.statusCode = 204;
   res.end();
-};
+}
 
 beforeAll(async () => {
-  testServer = await restana({defaultRoute});
-  testServer = await testServer.start(0, "127.0.0.1");
+  testServer = http.createServer(onRequest);
+  await promisify(testServer.listen).bind(testServer)(0, "127.0.0.1");
   testUrl = makeUrl(testServer);
 });
 
