@@ -2,19 +2,16 @@
 const {getProxyForUrl} = require("proxy-from-env");
 const HttpProxyAgent = require("http-proxy-agent");
 const HttpsProxyAgent = require("https-proxy-agent");
-const AbortController = require("abort-controller");
 
 module.exports = ({fetch}) => {
-  return (url, {timeout, signal, ...opts} = {}) => {
-    let controller;
-
-    const promise = new Promise((resolve, reject) => {
+  return (url, {timeout, ...opts} = {}) => {
+    return new Promise((resolve, reject) => {
       // proxy
       if (!("agent" in opts)) {
         const proxyUrl = getProxyForUrl(url);
         if (proxyUrl) {
           opts.agent = () => {
-            const Agent = url.startsWith("http:") ? HttpProxyAgent : HttpsProxyAgent;
+            const Agent = url.startsWith("https:") ? HttpsProxyAgent : HttpProxyAgent;
             let {protocol, hostname, port} = new URL(proxyUrl);
             hostname = hostname.replace(/^\[/, "").replace(/\]$/, "");
             return new Agent({protocol, hostname, port});
@@ -32,15 +29,7 @@ module.exports = ({fetch}) => {
         }, timeout);
       }
 
-      // cancellation
-      if (!signal) {
-        controller = new AbortController();
-        opts = {...opts, signal: controller.signal};
-      }
-
-      const promise = fetch(url, opts);
-
-      promise.then((...args) => {
+      fetch(url, opts).then((...args) => {
         if (timeoutId) clearTimeout(timeoutId);
         resolve(...args);
       }).catch(err => {
@@ -49,11 +38,5 @@ module.exports = ({fetch}) => {
         reject(err);
       });
     });
-
-    if (controller) {
-      promise.cancel = () => controller.abort();
-    }
-
-    return promise;
   };
 };

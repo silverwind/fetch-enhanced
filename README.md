@@ -5,7 +5,6 @@
 
 - HTTP proxy discovery from standard environment variables
 - A `timeout` option
-- A `.cancel()` method on the returned Promise
 
 ## Usage
 
@@ -37,9 +36,6 @@ await promise; // returns null
   - `timeout`: *number* request timeout in milliseconds
   - any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
 
-Returns a Promise with a `.cancel()` method.
-
-When the `signal` option is specified, the `.cancel` method will no longer be present.
 When the `agent` option is specified, HTTP proxy will no longer be discovered.
 
 © [silverwind](https://github.com/silverwind), distributed under BSD licence

@@ -19,7 +19,6 @@
     "index.js"
   ],
   "dependencies": {
-    "abort-controller": "3.0.0",
     "http-proxy-agent": "4.0.1",
     "https-proxy-agent": "5.0.0",
     "proxy-from-env": "1.1.0"

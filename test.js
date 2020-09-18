@@ -59,10 +59,3 @@ test("timeout", async () => {
   expect(res.ok).toEqual(true);
   expect(res.status).toEqual(204);
 });
-
-test("cancel", async () => {
-  const promise = fetch(testUrl);
-  expect(typeof promise.cancel).toEqual("function");
-  promise.cancel();
-  expect(await promise).toEqual(null);
-});
