@@ -3,19 +3,28 @@ const {getProxyForUrl} = require("proxy-from-env");
 const HttpProxyAgent = require("http-proxy-agent");
 const HttpsProxyAgent = require("https-proxy-agent");
 
-module.exports = (fetch) => {
+const agentCache = {};
+
+const agents = {
+  "https": HttpsProxyAgent,
+  "http": HttpProxyAgent,
+};
+
+module.exports = fetch => {
   return (url, {timeout, ...opts} = {}) => {
     return new Promise((resolve, reject) => {
       // proxy
       if (!("agent" in opts)) {
         const proxyUrl = getProxyForUrl(url);
         if (proxyUrl) {
-          opts.agent = () => {
-            const Agent = url.startsWith("https:") ? HttpsProxyAgent : HttpProxyAgent;
-            let {protocol, hostname, port} = new URL(proxyUrl);
-            hostname = hostname.replace(/^\[/, "").replace(/\]$/, "");
-            return new Agent({protocol, hostname, port});
-          };
+          let {origin, protocol, hostname, port} = new URL(proxyUrl);
+          if (agentCache[origin]) opts.agent = agentCache[origin];
+
+          const Agent = agents[protocol];
+          if (Agent) {
+            hostname = hostname.replace(/^\[/, "").replace(/\]$/, ""); // ipv6 compat
+            opts.agent = new Agent({protocol, hostname, port});
+          }
         }
       }
 
@@ -29,9 +38,9 @@ module.exports = (fetch) => {
         }, timeout);
       }
 
-      fetch(url, opts).then((...args) => {
+      fetch(url, opts).then(res => {
         if (timeoutId) clearTimeout(timeoutId);
-        resolve(...args);
+        resolve(res);
       }).catch(err => {
         if (timeoutId) clearTimeout(timeoutId);
         if (err.name === "AbortError") return resolve(null);
@@ -39,4 +48,10 @@ module.exports = (fetch) => {
       });
     });
   };
+};
+
+module.exports.clearAgentCache = () => {
+  for (const origin of Object.keys(agentCache)) {
+    delete agentCache[origin];
+  }
 };
