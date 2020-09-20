@@ -37,7 +37,7 @@ function getAgent(url, agentOpts) {
 }
 
 module.exports = fetchImplementation => {
-  return function fetch(url, {timeout, agentOpts = {}, ...opts} = {}) {
+  return function fetch(url, {timeout = 0, agentOpts = {}, ...opts} = {}) {
     return new Promise((resolve, reject) => {
       // proxy
       if (!("agent" in opts)) {
