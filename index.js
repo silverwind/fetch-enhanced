@@ -20,17 +20,15 @@ function getAgent(url, agentOpts) {
     let {origin, protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
     if (agentCache[origin]) return agentCache[origin];
     hostname = hostname.replace(/^\[/, "").replace(/\]$/, ""); // ipv6 compat
-    const agent = new (isHTTPS ? HttpsProxyAgent : HttpProxyAgent)({
+    return agentCache[origin] = new (isHTTPS ? HttpsProxyAgent : HttpProxyAgent)({
       protocol, hostname, port,
       path: `${pathname}${search}${hash}`,
       auth: username && password ? `${username}:${password}` : username ? username : null,
       ...agentOpts,
     });
-    return agentCache[origin] = agent;
   } else {
     if (agentCache[first5]) return agentCache[first5];
-    const agent = new (isHTTPS ? HttpsAgent : HttpAgent)(agentOpts);
-    return agentCache[first5] = agent;
+    return agentCache[first5] = new (isHTTPS ? HttpsAgent : HttpAgent)(agentOpts);
   }
 }
 
