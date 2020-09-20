@@ -25,7 +25,7 @@ function getAgent(url, agentOpts) {
 
   if (proxyUrl) {
     const {protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
-    return agentCache[origin] = new (protocol === "https:" ? HttpsProxyAgent : HttpProxyAgent)({
+    return agentCache[origin] = new (destProtocol === "https:" ? HttpsProxyAgent : HttpProxyAgent)({
       protocol, port,
       hostname: hostname.replace(/^\[/, "").replace(/\]$/, ""), // ipv6 compat
       path: `${pathname}${search}${hash}`,
