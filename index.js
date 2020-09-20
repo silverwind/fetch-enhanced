@@ -5,16 +5,18 @@ const HttpsProxyAgent = require("https-proxy-agent");
 const {getProxyForUrl} = require("proxy-from-env");
 const {HttpsAgent} = require("agentkeepalive");
 
-const agentCache = {};
-const proxyCache = {};
+const agentCache  = {};
+const proxyUrlCache = {};
 
 const defaultAgentOpts = {
   maxSockets: 64,
+  keepAlive: true,
 };
 
 function getProxy(url) {
   const {origin, protocol} = new URL(url);
-  return [origin, protocol, proxyCache[origin] || (proxyCache[origin] = getProxyForUrl(url))];
+  const proxyUrl = proxyUrlCache[origin] || (proxyUrlCache[origin] = getProxyForUrl(url));
+  return [origin, protocol, proxyUrl];
 }
 
 function getAgent(url, agentOpts) {
@@ -65,7 +67,17 @@ module.exports = fetchImplementation => {
   };
 };
 
-module.exports.clearCache = () => {
-  for (const origin of Object.keys(agentCache)) delete agentCache[origin];
-  for (const origin of Object.keys(proxyCache)) delete proxyCache[origin];
+module.exports.destroyAgents = () => {
+  for (const [origin, agent] of Object.entries(agentCache)) {
+    if ("destroy" in agent) agent.destroy();
+    delete agentCache[origin];
+  }
+};
+
+module.exports.clearCaches = () => {
+  module.exports.destroyAgents();
+
+  for (const origin of Object.keys(proxyUrlCache)) {
+    delete proxyUrlCache[origin];
+  }
 };

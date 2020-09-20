@@ -4,10 +4,8 @@
 `fetch-enhanced` wraps a user-provided `fetch`-like module like [node-fetch](https://github.com/node-fetch/node-fetch) and adds:
 
 - HTTP Proxy discovery from standard environment variables
-- HTTP Keepalive support
 - HTTP Request Timeout support
-- HTTP Agent caching based on origin
-- HTTP Agent options support
+- HTTP Keepalive enabled by default
 
 ## Usage
 
@@ -31,11 +29,15 @@ await fetch("https://google.com", {timeout: 10000});
 - `options` *Object*
   - `timeout`: *number* Request timeout in milliseconds. Default: 0 (meaning no timeout).
   - `agent`: *http.Agent* Custom HTTP agent. When specified, proxy discovery will no longer work.
-  - `agentOpts`: *object* Node [agent options](https://nodejs.org/api/http.html#http_new_agent_options). Default: `{maxSockets: 64}`
+  - `agentOpts`: *object* [Agent options](https://nodejs.org/api/http.html#http_new_agent_options). Default: `{maxSockets: 64, keepAlive: true}`
   - Any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
 
-### fetchEnhanced.clearCache()
+### fetchEnhanced.destroyAgents()
 
-Clear all internal caches. This is only neccessary when the proxy environment variables are expected to change during runtime.
+Destroy all active agents. This is useful when shutting down the application with active keepAlive agents which may delay the process exiting otherwise.
+
+### fetchEnhanced.clearCaches()
+
+Clear all internal caches and destroys all agents. This is only neccessary when the proxy environment variables are expected to change during runtime or when shutting down the application.
 
 © [silverwind](https://github.com/silverwind), distributed under BSD licence

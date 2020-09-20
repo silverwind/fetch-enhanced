@@ -1409,10 +1409,10 @@ eslint-ast-utils@^1.1.0:
     lodash.get "^4.4.2"
     lodash.zip "^4.2.0"
 
-eslint-config-silverwind@18.0.8:
-  version "18.0.8"
-  resolved "https://registry.yarnpkg.com/eslint-config-silverwind/-/eslint-config-silverwind-18.0.8.tgz#8761c6dee0f9a7876a196b2f19579ea39d961c3f"
-  integrity sha512-//xV3VGj9FlGo57qUoFcw7ZkZ8n2TdGV+uyUy7SpiXhrQQVgoiR9dxqhffe3sadN05W8+QtuX/UH/q3+BYOHoQ==
+eslint-config-silverwind@18.0.9:
+  version "18.0.9"
+  resolved "https://registry.yarnpkg.com/eslint-config-silverwind/-/eslint-config-silverwind-18.0.9.tgz#ff738cce07821951f45cd2711a94fc1d03387ba0"
+  integrity sha512-7dyNlYYMgrrtPtcpBJTxyJmjIaVX4rj8bNQvLtu4Xw1109MWLRUxstQNpI020G8Ju1htdK7Sq2GoLOJBhNKiPg==
   dependencies:
     eslint-plugin-import "^2.22.0"
     eslint-plugin-unicorn "^21.0.0"
@@ -4213,10 +4213,10 @@ unset-value@^1.0.0:
     has-value "^0.3.1"
     isobject "^3.0.0"
 
-updates@10.3.6:
-  version "10.3.6"
-  resolved "https://registry.yarnpkg.com/updates/-/updates-10.3.6.tgz#f0f845a060ca0fa8fc5ef2594d5b6a96370746bc"
-  integrity sha512-G8GcEBbW8Nog3adrwauX1I874BbCfxOuZDFhBTsNph93WgG+mEZI8Vd4XHpuyalo9z81CHTsYC3GMACledqQVA==
+updates@11.1.1:
+  version "11.1.1"
+  resolved "https://registry.yarnpkg.com/updates/-/updates-11.1.1.tgz#3e6aa7b0e1796f7cb3a9ecf175ce67eeb52ad1bf"
+  integrity sha512-eKYIasEnHmOshq9pdQ4YMkRJVjYYrJZQfa3NQ92q9pEqYnI9ZiBW6oz4oe5P7THXudNfuEqWRpyuLGtFoEt0mA==
 
 uri-js@^4.2.2:
   version "4.4.0"

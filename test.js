@@ -34,8 +34,8 @@ afterAll(async () => {
   if (testServer) testServer.close();
 });
 
-beforeEach(() => {
-  fetchEnhanced.clearCache();
+afterEach(() => {
+  fetchEnhanced.clearCaches();
 });
 
 test("proxy", async () => {
