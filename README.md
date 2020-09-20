@@ -5,8 +5,9 @@
 
 - HTTP Proxy discovery from standard environment variables
 - HTTP Keepalive support
-- HTTP agent options support
-- Request timeout support
+- HTTP Request Timeout support
+- HTTP Agent caching based on origin
+- HTTP Agent options support
 
 ## Usage
 
