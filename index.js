@@ -13,26 +13,25 @@ const defaultAgentOpts = {
 };
 
 function getProxy(url) {
-  const {origin} = new URL(url);
-  return proxyCache[origin] || (proxyCache[origin] = getProxyForUrl(url));
+  const {origin, protocol} = new URL(url);
+  return [origin, protocol, proxyCache[origin] || (proxyCache[origin] = getProxyForUrl(url))];
 }
 
 function getAgent(url, agentOpts) {
-  const proxyUrl = getProxy(url);
-  const first5 = url.substring(0, 5);
-  const isHTTPS = first5 === "https";
+  const [origin, protocol, proxyUrl] = getProxy(url);
+  if (agentCache[origin]) return agentCache[origin];
 
   if (proxyUrl) {
-    const {origin, protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
-    return agentCache[origin] || (agentCache[origin] = new (isHTTPS ? HttpsProxyAgent : HttpProxyAgent)({
+    const {protocol: proxyProtocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
+    return agentCache[origin] = new (proxyProtocol === "https:" ? HttpsProxyAgent : HttpProxyAgent)({
       protocol, port,
       hostname: hostname.replace(/^\[/, "").replace(/\]$/, ""), // ipv6 compat
       path: `${pathname}${search}${hash}`,
       auth: username && password ? `${username}:${password}` : username ? username : null,
       ...agentOpts,
-    }));
+    });
   } else {
-    return agentCache[first5] || (agentCache[first5] = new (isHTTPS ? HttpsAgent : HttpAgent)(agentOpts));
+    return agentCache[origin] = new (protocol === "https:" ? HttpsAgent : HttpAgent)(agentOpts);
   }
 }
 
@@ -67,6 +66,6 @@ module.exports = fetchImplementation => {
 };
 
 module.exports.clearCache = () => {
-  for (const key of Object.keys(agentCache)) delete agentCache[key];
-  for (const key of Object.keys(proxyCache)) delete proxyCache[key];
+  for (const origin of Object.keys(agentCache)) delete agentCache[origin];
+  for (const origin of Object.keys(proxyCache)) delete proxyCache[origin];
 };
