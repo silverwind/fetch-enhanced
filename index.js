@@ -21,11 +21,9 @@ function getAgent(url, agentOpts) {
     if (agentCache[origin]) return agentCache[origin];
     hostname = hostname.replace(/^\[/, "").replace(/\]$/, ""); // ipv6 compat
     const agent = new (isHTTPS ? HttpsProxyAgent : HttpProxyAgent)({
-      protocol,
-      host: hostname,
+      protocol, hostname, port,
       path: `${pathname}${search}${hash}`,
       auth: username && password ? `${username}:${password}` : username ? username : null,
-      port,
       ...agentOpts,
     });
     return agentCache[origin] = agent;
