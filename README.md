@@ -6,7 +6,7 @@
 - HTTP Proxy discovery from standard environment variables
 - HTTP Keepalive support
 - HTTP agent options support
-- Request Timeout support
+- Request timeout support
 
 ## Usage
 
@@ -29,9 +29,12 @@ await fetch("https://google.com", {timeout: 10000});
 
 - `options` *Object*
   - `timeout`: *number* Request timeout in milliseconds. Default: 0 (meaning no timeout).
+  - `agent`: *http.Agent* Custom HTTP agent. When specified, proxy discovery will no longer work. Default: Custom agent.
   - `agentOpts`: *object* Node [agent options](https://nodejs.org/api/http.html#http_new_agent_options). Default: `{maxSockets: 64}`
   - Any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
 
-When the `agent` option is specified, HTTP proxies will no longer be discovered. The agent used for proxy requests will be cached on a per-origin basis. If necessary, the cache can be cleared using `fetchEnhanced.clearAgentCache()`.
+### fetchEnhanced.clearCache()
+
+Clear all internal caches. This is only neccessary when the proxy environment variables are expected to change during runtime.
 
 © [silverwind](https://github.com/silverwind), distributed under BSD licence

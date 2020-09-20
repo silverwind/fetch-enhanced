@@ -34,6 +34,10 @@ afterAll(async () => {
   if (testServer) testServer.close();
 });
 
+beforeEach(() => {
+  fetchEnhanced.clearCache();
+});
+
 test("proxy", async () => {
   const proxyServer = proxy(http.createServer());
   await promisify(proxyServer.listen).bind(proxyServer)();

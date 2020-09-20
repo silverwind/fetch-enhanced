@@ -6,29 +6,33 @@ const {getProxyForUrl} = require("proxy-from-env");
 const {HttpsAgent} = require("agentkeepalive");
 
 const agentCache = {};
+const proxyCache = {};
 
 const defaultAgentOpts = {
   maxSockets: 64,
 };
 
+function getProxy(url) {
+  const {origin} = new URL(url);
+  return proxyCache[origin] || (proxyCache[origin] = getProxyForUrl(url));
+}
+
 function getAgent(url, agentOpts) {
-  const proxyUrl = getProxyForUrl(url);
+  const proxyUrl = getProxy(url);
   const first5 = url.substring(0, 5);
   const isHTTPS = first5 === "https";
 
   if (proxyUrl) {
-    let {origin, protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
-    if (agentCache[origin]) return agentCache[origin];
-    hostname = hostname.replace(/^\[/, "").replace(/\]$/, ""); // ipv6 compat
-    return agentCache[origin] = new (isHTTPS ? HttpsProxyAgent : HttpProxyAgent)({
-      protocol, hostname, port,
+    const {origin, protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
+    return agentCache[origin] || (agentCache[origin] = new (isHTTPS ? HttpsProxyAgent : HttpProxyAgent)({
+      protocol, port,
+      hostname: hostname.replace(/^\[/, "").replace(/\]$/, ""), // ipv6 compat
       path: `${pathname}${search}${hash}`,
       auth: username && password ? `${username}:${password}` : username ? username : null,
       ...agentOpts,
-    });
+    }));
   } else {
-    if (agentCache[first5]) return agentCache[first5];
-    return agentCache[first5] = new (isHTTPS ? HttpsAgent : HttpAgent)(agentOpts);
+    return agentCache[first5] || (agentCache[first5] = new (isHTTPS ? HttpsAgent : HttpAgent)(agentOpts));
   }
 }
 
@@ -62,8 +66,7 @@ module.exports = fetchImplementation => {
   };
 };
 
-module.exports.clearAgentCache = () => {
-  for (const origin of Object.keys(agentCache)) {
-    delete agentCache[origin];
-  }
+module.exports.clearCache = () => {
+  for (const key of Object.keys(agentCache)) delete agentCache[key];
+  for (const key of Object.keys(proxyCache)) delete proxyCache[key];
 };
