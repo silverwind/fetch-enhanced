@@ -29,7 +29,7 @@ function getAgent(url, agentOpts) {
     return agentCache[origin] = agent;
   } else {
     if (agentCache[first5]) return agentCache[first5];
-    const agent = new (isHTTPS ? HttpsAgent : HttpAgent)({...agentOpts});
+    const agent = new (isHTTPS ? HttpsAgent : HttpAgent)(agentOpts);
     return agentCache[first5] = agent;
   }
 }
