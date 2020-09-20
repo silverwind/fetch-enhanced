@@ -20,12 +20,12 @@ function getProxy(url) {
 }
 
 function getAgent(url, agentOpts) {
-  const [origin, protocol, proxyUrl] = getProxy(url);
+  const [origin, destProtocol, proxyUrl] = getProxy(url);
   if (agentCache[origin]) return agentCache[origin];
 
   if (proxyUrl) {
-    const {protocol: proxyProtocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
-    return agentCache[origin] = new (proxyProtocol === "https:" ? HttpsProxyAgent : HttpProxyAgent)({
+    const {protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
+    return agentCache[origin] = new (protocol === "https:" ? HttpsProxyAgent : HttpProxyAgent)({
       protocol, port,
       hostname: hostname.replace(/^\[/, "").replace(/\]$/, ""), // ipv6 compat
       path: `${pathname}${search}${hash}`,
@@ -33,7 +33,7 @@ function getAgent(url, agentOpts) {
       ...agentOpts,
     });
   } else {
-    return agentCache[origin] = new (protocol === "https:" ? HttpsAgent : HttpAgent)(agentOpts);
+    return agentCache[origin] = new (destProtocol === "https:" ? HttpsAgent : HttpAgent)(agentOpts);
   }
 }
 
