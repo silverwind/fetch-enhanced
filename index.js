@@ -13,27 +13,23 @@ const defaultAgentOpts = {
   keepAlive: true,
 };
 
-function getProxy(url) {
-  const {origin, protocol} = new URL(url);
-  const proxyUrl = (origin in proxyUrlCache) || (proxyUrlCache[origin] = getProxyForUrl(url));
-  return [origin, protocol, proxyUrl];
-}
-
 function getAgent(url, agentOpts) {
-  const [origin, destProtocol, proxyUrl] = getProxy(url);
+  const {origin, protocol} = new URL(url);
   if (origin in agentCache) return agentCache[origin];
 
+  const proxyUrl = (origin in proxyUrlCache) || (proxyUrlCache[origin] = getProxyForUrl(url));
   if (proxyUrl) {
-    const {protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
-    return agentCache[origin] = new (destProtocol === "https:" ? HttpsProxyAgent : HttpProxyAgent)({
-      protocol, port,
+    const {protocol: proxyProtocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
+    return agentCache[origin] = new (protocol === "https:" ? HttpsProxyAgent : HttpProxyAgent)({
+      protocol: proxyProtocol,
       hostname: hostname.replace(/^\[/, "").replace(/\]$/, ""), // ipv6 compat
+      port,
       path: `${pathname}${search}${hash}`,
       auth: username && password ? `${username}:${password}` : username ? username : null,
       ...agentOpts,
     });
   } else {
-    return agentCache[origin] = new (destProtocol === "https:" ? HttpsAgent : HttpAgent)(agentOpts);
+    return agentCache[origin] = new (protocol === "https:" ? HttpsAgent : HttpAgent)(agentOpts);
   }
 }
 
