@@ -15,13 +15,13 @@ const defaultAgentOpts = {
 
 function getProxy(url) {
   const {origin, protocol} = new URL(url);
-  const proxyUrl = proxyUrlCache[origin] || (proxyUrlCache[origin] = getProxyForUrl(url));
+  const proxyUrl = (origin in proxyUrlCache) || (proxyUrlCache[origin] = getProxyForUrl(url));
   return [origin, protocol, proxyUrl];
 }
 
 function getAgent(url, agentOpts) {
   const [origin, destProtocol, proxyUrl] = getProxy(url);
-  if (agentCache[origin]) return agentCache[origin];
+  if (origin in agentCache) return agentCache[origin];
 
   if (proxyUrl) {
     const {protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
