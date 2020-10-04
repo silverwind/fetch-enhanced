@@ -5,7 +5,7 @@ const HttpsProxyAgent = require("https-proxy-agent");
 const {getProxyForUrl} = require("proxy-from-env");
 const {HttpsAgent} = require("agentkeepalive");
 
-const agentCache  = Object.create(null);
+const agentCache = Object.create(null);
 const proxyUrlCache = Object.create(null);
 
 const defaultAgentOpts = {
