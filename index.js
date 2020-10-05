@@ -50,7 +50,7 @@ module.exports = fetchImplementation => {
       let timeoutId;
       if (timeout) {
         timeoutId = setTimeout(() => {
-          const err = new Error(`${opts.method || "GET"} ${url} timed out`);
+          const err = new Error(`${opts.method || "GET"} ${url} timed out after ${timeout}ms`);
           err.name = "TimeoutError";
           reject(err);
         }, timeout);
