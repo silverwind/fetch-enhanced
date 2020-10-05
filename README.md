@@ -29,7 +29,7 @@ await fetch("https://google.com", {timeout: 10000});
 - `options` *Object*
   - `timeout`: *number* Request timeout in milliseconds. Default: 0 (meaning no timeout).
   - `agent`: *http.Agent* Custom HTTP agent. When specified, proxy discovery will no longer work.
-  - `agentOpts`: *object* [Agent options](https://nodejs.org/api/http.html#http_new_agent_options). Default: `{maxSockets: 64, keepAlive: true}`
+  - `agentOpts`: *object* [Agent options](https://nodejs.org/api/https.html#https_new_agent_options). Default: `{maxSockets: 64, keepAlive: true}`
   - Any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
 
 ### fetchEnhanced.destroyAgents()
