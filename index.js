@@ -13,14 +13,20 @@ const defaultAgentOpts = {
   keepAlive: true,
 };
 
+function getAgentCacheKey(origin, agentOpts) {
+  if (!agentOpts) return origin;
+  return JSON.stringify(agentOpts); // this assumes that all agent options are primitive types
+}
+
 function getAgent(url, agentOpts) {
   const {origin, protocol} = new URL(url);
-  if (origin in agentCache) return agentCache[origin];
+  const agentCacheKey = getAgentCacheKey(origin, agentOpts);
+  if (agentCacheKey in agentCache) return agentCache[agentCacheKey];
 
   const proxyUrl = (origin in proxyUrlCache) || (proxyUrlCache[origin] = getProxyForUrl(url));
   if (proxyUrl) {
     const {protocol: proxyProtocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
-    return agentCache[origin] = new (protocol === "https:" ? HttpsProxyAgent : HttpProxyAgent)({
+    return agentCache[agentCacheKey] = new (protocol === "https:" ? HttpsProxyAgent : HttpProxyAgent)({
       protocol: proxyProtocol,
       hostname: hostname.replace(/^\[/, "").replace(/\]$/, ""), // ipv6 compat
       port,
@@ -29,7 +35,7 @@ function getAgent(url, agentOpts) {
       ...agentOpts,
     });
   } else {
-    return agentCache[origin] = new (protocol === "https:" ? HttpsAgent : HttpAgent)(agentOpts);
+    return agentCache[agentCacheKey] = new (protocol === "https:" ? HttpsAgent : HttpAgent)(agentOpts);
   }
 }
 
