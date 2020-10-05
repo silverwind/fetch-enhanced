@@ -26,11 +26,11 @@
   },
   "devDependencies": {
     "eslint": "7.10.0",
-    "eslint-config-silverwind": "20.0.0",
-    "jest": "26.4.2",
+    "eslint-config-silverwind": "21.0.0",
+    "jest": "26.5.0",
     "node-fetch": "2.6.1",
     "proxy": "1.0.2",
-    "updates": "11.2.0",
+    "updates": "11.2.4",
     "versions": "8.4.3"
   },
   "jest": {
