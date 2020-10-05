@@ -6,7 +6,6 @@ const {getProxyForUrl} = require("proxy-from-env");
 const {HttpsAgent} = require("agentkeepalive");
 
 const agentCache = Object.create(null);
-const proxyUrlCache = Object.create(null);
 
 const defaultAgentOpts = {
   maxSockets: 64,
@@ -23,7 +22,7 @@ function getAgent(url, agentOpts) {
   const agentCacheKey = getAgentCacheKey(origin, agentOpts);
   if (agentCacheKey in agentCache) return agentCache[agentCacheKey];
 
-  const proxyUrl = (origin in proxyUrlCache) || (proxyUrlCache[origin] = getProxyForUrl(url));
+  const proxyUrl = getProxyForUrl(url);
   if (proxyUrl) {
     const {protocol: proxyProtocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
     return agentCache[agentCacheKey] = new (protocol === "https:" ? HttpsProxyAgent : HttpProxyAgent)({
@@ -78,8 +77,4 @@ module.exports.destroyAgents = () => {
 
 module.exports.clearCaches = () => {
   module.exports.destroyAgents();
-
-  for (const origin of Object.keys(proxyUrlCache)) {
-    delete proxyUrlCache[origin];
-  }
 };
