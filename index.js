@@ -21,7 +21,7 @@ class TimeoutError extends Error {
 
 function getAgentCacheKey(origin, agentOpts) {
   if (!agentOpts) return origin;
-  return JSON.stringify(agentOpts); // this assumes that all agent options are primitive types
+  return JSON.stringify({origin, ...agentOpts}); // this assumes that all agent options are primitive types
 }
 
 function getAgent(url, agentOpts) {
