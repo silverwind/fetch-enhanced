@@ -1,6 +1,6 @@
 {
   "name": "fetch-enhanced",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "fetch wrapper with support for automatic HTTP proxy, timeout and cancellation",
   "author": "silverwind",
   "repository": "silverwind/fetch-enhanced",
