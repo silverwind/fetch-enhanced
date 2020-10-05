@@ -51,7 +51,7 @@ test("proxy", async () => {
 
   process.env.HTTP_PROXY = "http://proxy.invalid";
   process.env.HTTPS_PROXY = "http://proxy.invalid";
-  await expect(fetch(testUrl, {timeout: 100})).rejects.toThrow();
+  await expect(fetch(testUrl, {timeout: 100})).rejects.toThrow(fetchEnhanced.TimeoutError);
   delete process.env.HTTP_PROXY;
   delete process.env.HTTPS_PROXY;
 
@@ -59,7 +59,7 @@ test("proxy", async () => {
 });
 
 test("timeout", async () => {
-  await expect(fetch(testUrl, {timeout: 100})).rejects.toThrow();
+  await expect(fetch(testUrl, {timeout: 100})).rejects.toThrow(fetchEnhanced.TimeoutError);
   const res = await fetch(testUrl, {timeout: 1000});
   expect(res.ok).toEqual(true);
   expect(res.status).toEqual(204);

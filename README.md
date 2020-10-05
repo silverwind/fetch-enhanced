@@ -40,4 +40,8 @@ Destroy all active agents. This is useful when shutting down the application wit
 
 Clear all internal caches and destroys all agents. This is only neccessary when the proxy environment variables are expected to change during runtime or when shutting down the application.
 
+### fetchEnhhanced.TimeoutError
+
+Error class that can be used for `instanceof` checks. E.g. `err instanceOf fetchEnhanced.TimeoutError`.
+
 © [silverwind](https://github.com/silverwind), distributed under BSD licence

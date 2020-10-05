@@ -12,6 +12,13 @@ const defaultAgentOpts = {
   keepAlive: true,
 };
 
+class TimeoutError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "TimeoutError";
+  }
+}
+
 function getAgentCacheKey(origin, agentOpts) {
   if (!agentOpts) return origin;
   return JSON.stringify(agentOpts); // this assumes that all agent options are primitive types
@@ -50,8 +57,7 @@ module.exports = fetchImplementation => {
       let timeoutId;
       if (timeout) {
         timeoutId = setTimeout(() => {
-          const err = new Error(`${opts.method || "GET"} ${url} timed out after ${timeout}ms`);
-          err.name = "TimeoutError";
+          const err = new TimeoutError(`${opts.method || "GET"} ${url} timed out after ${timeout}ms`);
           reject(err);
         }, timeout);
       }
@@ -78,3 +84,5 @@ module.exports.destroyAgents = () => {
 module.exports.clearCaches = () => {
   module.exports.destroyAgents();
 };
+
+module.exports.TimeoutError = TimeoutError;
