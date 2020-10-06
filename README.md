@@ -6,7 +6,7 @@
 - HTTP Proxy discovery from standard environment variables
 - HTTP Request Timeout support
 - HTTP Keepalive enabled by default
-- All [agent options](https://nodejs.org/api/https.html#https_new_agent_options) accessible
+- Accessible [agent options](https://nodejs.org/api/https.html#https_new_agent_options)
 
 ## Usage
 
