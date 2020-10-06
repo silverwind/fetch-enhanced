@@ -1,11 +1,12 @@
 # fetch-enhanced
 [![](https://img.shields.io/npm/v/fetch-enhanced.svg?style=flat)](https://www.npmjs.org/package/fetch-enhanced) [![](https://img.shields.io/npm/dm/fetch-enhanced.svg)](https://www.npmjs.org/package/fetch-enhanced)
 
-`fetch-enhanced` wraps a user-provided `fetch`-like module like [node-fetch](https://github.com/node-fetch/node-fetch) and adds:
+`fetch-enhanced` wraps a provided `fetch`-like module like [node-fetch](https://github.com/node-fetch/node-fetch) and adds:
 
 - HTTP Proxy discovery from standard environment variables
 - HTTP Request Timeout support
 - HTTP Keepalive enabled by default
+- All [agent options](https://nodejs.org/api/https.html#https_new_agent_options) accessible
 
 ## Usage
 
@@ -42,6 +43,6 @@ Clear all internal caches and destroys all agents. This is only neccessary when 
 
 ### fetchEnhhanced.TimeoutError
 
-Error class that can be used for `instanceof` checks. E.g. `err instanceOf fetchEnhanced.TimeoutError`.
+Error class that can be used for `err instanceOf TimeoutError`.
 
 © [silverwind](https://github.com/silverwind), distributed under BSD licence
