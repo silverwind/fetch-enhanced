@@ -29,20 +29,20 @@ function getAgent(url, agentOpts) {
   const {origin, protocol} = new URL(url);
   const agentCacheKey = getAgentCacheKey(origin, agentOpts);
   if (agentCacheKey in agentCache) return agentCache[agentCacheKey];
+  const isHttps = protocol === "https:";
 
   const proxyUrl = getProxyForUrl(url);
   if (proxyUrl) {
-    const {protocol: proxyProtocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
-    return agentCache[agentCacheKey] = new (protocol === "https:" ? HttpsProxyAgent : HttpProxyAgent)({
-      protocol: proxyProtocol,
+    const {protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
+    return agentCache[agentCacheKey] = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)({
+      protocol, port,
       hostname: hostname.replace(/^\[/, "").replace(/\]$/, ""), // ipv6 compat
-      port,
       path: `${pathname}${search}${hash}`,
       auth: username && password ? `${username}:${password}` : username ? username : null,
       ...agentOpts,
     });
   } else {
-    return agentCache[agentCacheKey] = new (protocol === "https:" ? HttpsAgent : HttpAgent)(agentOpts);
+    return agentCache[agentCacheKey] = new (isHttps ? HttpsAgent : HttpAgent)(agentOpts);
   }
 }
 
