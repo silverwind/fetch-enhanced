@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+"use strict";
+
 const HttpAgent = require("agentkeepalive");
 const HttpProxyAgent = require("http-proxy-agent");
 const HttpsProxyAgent = require("https-proxy-agent");
