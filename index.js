@@ -3,10 +3,13 @@
 const HttpAgent = require("agentkeepalive");
 const HttpProxyAgent = require("http-proxy-agent");
 const HttpsProxyAgent = require("https-proxy-agent");
+const QuickLRU = require("quick-lru");
 const {getProxyForUrl} = require("proxy-from-env");
 const {HttpsAgent} = require("agentkeepalive");
 
-const agentCache = Object.create(null);
+const defaultModuleOpts = {
+  agentCacheSize: 512,
+};
 
 const defaultAgentOpts = {
   maxSockets: 64,
@@ -21,34 +24,37 @@ class TimeoutError extends Error {
   }
 }
 
-function getAgentCacheKey(origin, agentOpts) {
-  if (!agentOpts) return origin;
-  return JSON.stringify({origin, ...agentOpts}); // this assumes that all agent options are primitive types
-}
+module.exports = (fetchImplementation, moduleOpts = {}) => {
+  const opts = {...defaultModuleOpts, ...moduleOpts};
+  const agentCache = new QuickLRU({maxSize: opts.agentCacheSize});
 
-function getAgent(url, agentOpts) {
-  const {origin, protocol} = new URL(url);
-  const agentCacheKey = getAgentCacheKey(origin, agentOpts);
-  if (agentCacheKey in agentCache) return agentCache[agentCacheKey];
-  const isHttps = protocol === "https:";
+  function getAgent(url, agentOpts = {}) {
+    const {origin, protocol} = new URL(url);
 
-  const proxyUrl = getProxyForUrl(url);
-  if (proxyUrl) {
-    const {protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
-    return agentCache[agentCacheKey] = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)({
-      protocol, port,
-      hostname: hostname.replace(/^\[/, "").replace(/\]$/, ""), // ipv6 compat
-      path: `${pathname}${search}${hash}`,
-      auth: username && password ? `${username}:${password}` : username ? username : null,
-      ...agentOpts,
-    });
-  } else {
-    return agentCache[agentCacheKey] = new (isHttps ? HttpsAgent : HttpAgent)(agentOpts);
+    const agentCacheKey = JSON.stringify({origin, ...agentOpts});
+    if (agentCache.peek(agentCacheKey)) return agentCache.get(agentCacheKey);
+
+    let agent;
+    const isHttps = protocol === "https:";
+    const proxyUrl = getProxyForUrl(url);
+    if (proxyUrl) {
+      const {protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
+      agent = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)({
+        protocol, port,
+        hostname: hostname.replace(/^\[/, "").replace(/\]$/, ""), // ipv6 compat
+        path: `${pathname}${search}${hash}`,
+        auth: username && password ? `${username}:${password}` : username ? username : null,
+        ...agentOpts,
+      });
+    } else {
+      agent = new (isHttps ? HttpsAgent : HttpAgent)(agentOpts);
+    }
+
+    agentCache.set(agentCacheKey, agent);
+    return agent;
   }
-}
 
-module.exports = fetchImplementation => {
-  return function fetch(url, {timeout = 0, agentOpts = {}, ...opts} = {}) {
+  const fetch = (url, {timeout = 0, agentOpts = {}, ...opts} = {}) => {
     return new Promise((resolve, reject) => {
       // proxy
       if (!("agent" in opts)) {
@@ -74,17 +80,15 @@ module.exports = fetchImplementation => {
       });
     });
   };
-};
 
-module.exports.destroyAgents = () => {
-  for (const [origin, agent] of Object.entries(agentCache)) {
-    if ("destroy" in agent) agent.destroy();
-    delete agentCache[origin];
-  }
-};
+  fetch.clearCache = () => {
+    for (const agent of agentCache.values()) {
+      if ("destroy" in agent) agent.destroy();
+    }
+    agentCache.clear();
+  };
 
-module.exports.clearCaches = () => {
-  module.exports.destroyAgents();
+  return fetch;
 };
 
 module.exports.TimeoutError = TimeoutError;

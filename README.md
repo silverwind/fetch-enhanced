@@ -21,25 +21,23 @@ await fetch("https://google.com", {timeout: 10000});
 ```
 
 ## API
-### fetchEnhanced(fetchImplementation)
+### fetchEnhanced(fetchImplementation, [opts])
 
-- fetchImplementation: *Function* A `fetch`-like module that takes `(url, options)` and a `agent` option.
+- fetchImplementation: *Function* A `fetch`-like module that takes `(url, opts)` and a `agent` option.
+- `opts` *Object*
+  - `agentCacheSize`: *number* Size of the agent cache. Default: `512`.
 
-### fetch(url, options)
+### fetch(url, [opts])
 
-- `options` *Object*
+- `opts` *Object*
   - `timeout`: *number* Request timeout in milliseconds. Default: 0 (meaning no timeout).
   - `agent`: *http.Agent* Custom HTTP agent. When specified, proxy discovery will no longer work.
   - `agentOpts`: *object* [Agent options](https://nodejs.org/api/https.html#https_new_agent_options). Default: `{maxSockets: 64, keepAlive: true}`
   - Any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
 
-### fetchEnhanced.destroyAgents()
+### fetch.clearCache()
 
-Destroy all active agents. This is useful when shutting down the application with active keepAlive agents which may delay the process exiting otherwise.
-
-### fetchEnhanced.clearCaches()
-
-Clear all internal caches and destroys all agents. This is only neccessary when the proxy environment variables are expected to change during runtime or when shutting down the application.
+Clear the agent cache and destroys all cached agents. This is generally only neccessary when the proxy environment variables are expected to change during runtime or to close open keepalive sockets.
 
 ### fetchEnhhanced.TimeoutError
 

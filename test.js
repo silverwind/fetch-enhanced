@@ -4,19 +4,17 @@ const fetchEnhanced = require(".");
 const http = require("http");
 const nodeFetch = require("node-fetch");
 const proxy = require("proxy");
-const {isIPv6} = require("net");
 const {promisify} = require("util");
 
 const fetch = fetchEnhanced(nodeFetch);
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 function makeUrl(server) {
-  const {address, port} = server.address();
-  const hostname = isIPv6(address) ? `[${address}]` : address; // ipv6 compat
-  return String(Object.assign(new URL("http://x"), {hostname, port})).replace(/\/$/, "");
+  const {port} = server.address();
+  return String(Object.assign(new URL("http://localhost"), {port})).replace(/\/$/, "");
 }
 
-let testServer, testUrl;
+let server, url;
 
 async function onRequest(_req, res) {
   await sleep(500);
@@ -25,33 +23,33 @@ async function onRequest(_req, res) {
 }
 
 beforeAll(async () => {
-  testServer = http.createServer(onRequest);
-  await promisify(testServer.listen).bind(testServer)(0, "127.0.0.1");
-  testUrl = makeUrl(testServer);
+  server = http.createServer(onRequest);
+  await promisify(server.listen).bind(server)(0, "127.0.0.1");
+  url = makeUrl(server);
 });
 
 afterAll(async () => {
-  if (testServer) testServer.close();
+  if (server) server.close();
 });
 
 afterEach(() => {
-  fetchEnhanced.clearCaches();
+  fetch.clearCache();
 });
 
 test("proxy", async () => {
   const proxyServer = proxy(http.createServer());
   await promisify(proxyServer.listen).bind(proxyServer)();
-  const url = makeUrl(proxyServer);
+  const proxyUrl = makeUrl(proxyServer);
 
-  process.env.HTTP_PROXY = url;
-  process.env.HTTPS_PROXY = url;
-  const res = await fetch(testUrl);
+  process.env.HTTP_PROXY = proxyUrl;
+  process.env.HTTPS_PROXY = proxyUrl;
+  const res = await fetch(url);
   expect(res.ok).toEqual(true);
   expect(res.status).toEqual(204);
 
-  process.env.HTTP_PROXY = "http://proxy.invalid";
-  process.env.HTTPS_PROXY = "http://proxy.invalid";
-  await expect(fetch(testUrl, {timeout: 100})).rejects.toThrow(fetchEnhanced.TimeoutError);
+  process.env.HTTP_PROXY = "http://192.0.2.1";
+  process.env.HTTPS_PROXY = "http://192.0.2.1";
+  await expect(fetch(url, {timeout: 100})).rejects.toThrow(fetchEnhanced.TimeoutError);
   delete process.env.HTTP_PROXY;
   delete process.env.HTTPS_PROXY;
 
@@ -59,8 +57,8 @@ test("proxy", async () => {
 });
 
 test("timeout", async () => {
-  await expect(fetch(testUrl, {timeout: 100})).rejects.toThrow(fetchEnhanced.TimeoutError);
-  const res = await fetch(testUrl, {timeout: 1000});
+  await expect(fetch(url, {timeout: 100})).rejects.toThrow(fetchEnhanced.TimeoutError);
+  const res = await fetch(url, {timeout: 1000});
   expect(res.ok).toEqual(true);
   expect(res.status).toEqual(204);
 });
