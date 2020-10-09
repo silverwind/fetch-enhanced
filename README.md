@@ -16,8 +16,7 @@ npm i fetch-enhanced node-fetch
 ```js
 const fetch = require("fetch-enhanced")(require("node-fetch"));
 
-process.env.HTTPS_PROXY = "https://myproxy.com";
-await fetch("https://google.com", {timeout: 10000});
+await fetch("https://example.com");
 ```
 
 ## API
