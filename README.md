@@ -39,7 +39,7 @@ await fetch("https://example.com");
 
 Clear the agent cache and destroys all cached agents. This is generally only neccessary when the proxy environment variables are expected to change during runtime or to close open keepalive sockets.
 
-### fetchEnhhanced.TimeoutError
+### fetchEnhanced.TimeoutError
 
 Error class that can be used for `err instanceOf TimeoutError`.
 
