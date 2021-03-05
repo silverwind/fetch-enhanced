@@ -41,6 +41,6 @@ Clear the agent cache and destroys all cached agents. This is generally only nec
 
 ### fetchEnhanced.TimeoutError
 
-Error class that can be used for `err instanceOf TimeoutError`.
+Error class that can be used for `err instanceof TimeoutError`.
 
 © [silverwind](https://github.com/silverwind), distributed under BSD licence
