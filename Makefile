@@ -5,7 +5,7 @@ node_modules: yarn.lock
 deps: node_modules
 
 update: node_modules
-	yarn -s run updates -cu
+	yarn -s run updates -cue quick-lru
 	rm -rf node_modules
 	yarn -s
 	@touch yarn.lock
