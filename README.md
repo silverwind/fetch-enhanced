@@ -15,7 +15,8 @@
 npm i fetch-enhanced node-fetch
 ```
 ```js
-const fetch = require("fetch-enhanced")(require("node-fetch"));
+const nodeFetch = require("node-fetch");
+const fetch = require("fetch-enhanced")(nodeFetch);
 
 await fetch("https://example.com");
 ```
