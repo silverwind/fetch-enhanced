@@ -13,7 +13,7 @@ const defaultModuleOpts = {
 
 const defaultAgentOpts = {
   maxSockets: 64,
-  keepAlive: true,
+  keepAlive: false,
 };
 
 class TimeoutError extends Error {

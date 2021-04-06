@@ -5,7 +5,6 @@
 
 - HTTP Proxy discovery from standard environment variables
 - HTTP Request Timeout support
-- HTTP Keepalive enabled by default
 - TCP_NODELAY enabled by default
 - Accessible [agent options](https://nodejs.org/api/https.html#https_new_agent_options)
 
@@ -33,7 +32,7 @@ await fetch("https://example.com");
 - `opts` *Object*
   - `timeout`: *number* Request timeout in milliseconds. Default: 0 (meaning no timeout).
   - `agent`: *http.Agent* Custom HTTP agent. When specified, proxy discovery will no longer work.
-  - `agentOpts`: *object* [Agent options](https://nodejs.org/api/https.html#https_new_agent_options). Default: `{maxSockets: 64, keepAlive: true}`
+  - `agentOpts`: *object* [Agent](https://nodejs.org/api/https.html#https_new_agent_options) [options](https://nodejs.org/api/http.html#http_new_agent_options). Default: `{maxSockets: 64, keepAlive: false}`
   - Any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
 
 ### fetch.clearCache()
