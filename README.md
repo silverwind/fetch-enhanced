@@ -6,7 +6,7 @@
 - HTTP Proxy discovery from standard environment variables
 - HTTP Request Timeout support
 - TCP_NODELAY enabled by default
-- Accessible [agent options](https://nodejs.org/api/https.html#https_new_agent_options)
+- Accessible [agent](https://nodejs.org/api/https.html#https_new_agent_options) [options](https://nodejs.org/api/http.html#http_new_agent_options)
 
 ## Usage
 
