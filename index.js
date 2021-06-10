@@ -1,11 +1,11 @@
 "use strict";
 
-const HttpAgent = require("agentkeepalive");
 const HttpProxyAgent = require("http-proxy-agent");
 const HttpsProxyAgent = require("https-proxy-agent");
 const QuickLRU = require("quick-lru");
 const {getProxyForUrl} = require("proxy-from-env");
-const {HttpsAgent} = require("agentkeepalive");
+const {Agent: HttpAgent} = require("http");
+const {Agent: HttpsAgent} = require("https");
 
 const defaultModuleOpts = {
   agentCacheSize: 512,
