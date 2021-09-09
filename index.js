@@ -48,6 +48,10 @@ module.exports = (fetchImplementation, moduleOpts = {}) => {
       });
     } else {
       agent = new (isHttps ? HttpsAgent : HttpAgent)(agentOpts);
+      if ("maxSockets" in agentOpts) {
+        // this option is not exposed in constructor for some reason
+        agent.maxSockets = agentOpts.maxSockets;
+      }
     }
 
     agentCache.set(agentCacheKey, agent);
