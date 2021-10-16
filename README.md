@@ -38,7 +38,7 @@ await fetch("https://example.com");
 
 ### fetch.clearCache()
 
-Clear the agent cache and destroys all cached agents. This is generally only neccessary when the proxy environment variables are expected to change during runtime or to close open keepalive sockets.
+Clear the agent cache and destroys all cached agents. This is generally only neccessary when the proxy environment variables are expected to change during runtime.
 
 ### fetchEnhanced.TimeoutError
 
