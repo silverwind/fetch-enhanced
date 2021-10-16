@@ -14,7 +14,7 @@ npm i fetch-enhanced node-fetch
 ```
 ```js
 import nodeFetch from "node-fetch";
-import fetchEnhanced = from "fetch-enhanced";
+import fetchEnhanced from "fetch-enhanced";
 
 const fetch = fetchEnhanced(nodeFetch);
 
