@@ -1,10 +1,8 @@
-"use strict";
-
-const fetchEnhanced = require(".");
-const http = require("http");
-const nodeFetch = require("node-fetch");
-const proxy = require("proxy");
-const {promisify} = require("util");
+import fetchEnhanced, {TimeoutError} from "./index.js";
+import http from "http";
+import nodeFetch from "node-fetch";
+import proxy from "proxy";
+import {promisify} from "util";
 
 const fetch = fetchEnhanced(nodeFetch);
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -49,7 +47,7 @@ test("proxy", async () => {
 
   process.env.HTTP_PROXY = "http://192.0.2.1";
   process.env.HTTPS_PROXY = "http://192.0.2.1";
-  await expect(fetch(url, {timeout: 100})).rejects.toThrow(fetchEnhanced.TimeoutError);
+  await expect(fetch(url, {timeout: 100})).rejects.toThrow(TimeoutError);
   delete process.env.HTTP_PROXY;
   delete process.env.HTTPS_PROXY;
 
@@ -57,7 +55,7 @@ test("proxy", async () => {
 });
 
 test("timeout", async () => {
-  await expect(fetch(url, {timeout: 100})).rejects.toThrow(fetchEnhanced.TimeoutError);
+  await expect(fetch(url, {timeout: 100})).rejects.toThrow(TimeoutError);
   const res = await fetch(url, {timeout: 1000});
   expect(res.ok).toEqual(true);
   expect(res.status).toEqual(204);

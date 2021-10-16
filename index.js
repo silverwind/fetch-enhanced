@@ -1,11 +1,9 @@
-"use strict";
-
-const HttpProxyAgent = require("http-proxy-agent");
-const HttpsProxyAgent = require("https-proxy-agent");
-const QuickLRU = require("quick-lru");
-const {getProxyForUrl} = require("proxy-from-env");
-const {Agent: HttpAgent} = require("http");
-const {Agent: HttpsAgent} = require("https");
+import HttpProxyAgent from "http-proxy-agent";
+import HttpsProxyAgent from "https-proxy-agent";
+import QuickLRU from "quick-lru";
+import {getProxyForUrl} from "proxy-from-env";
+import {Agent as HttpAgent} from "http";
+import {Agent as HttpsAgent} from "https";
 
 const defaultModuleOpts = {
   agentCacheSize: 512,
@@ -16,7 +14,7 @@ const defaultAgentOpts = {
   keepAlive: false,
 };
 
-class TimeoutError extends Error {
+export class TimeoutError extends Error {
   constructor(message) {
     super(message);
     this.name = "TimeoutError";
@@ -24,7 +22,7 @@ class TimeoutError extends Error {
   }
 }
 
-module.exports = (fetchImplementation, moduleOpts = {}) => {
+export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
   const opts = {...defaultModuleOpts, ...moduleOpts};
   const agentCache = new QuickLRU({maxSize: opts.agentCacheSize});
 
@@ -93,6 +91,4 @@ module.exports = (fetchImplementation, moduleOpts = {}) => {
   };
 
   return fetch;
-};
-
-module.exports.TimeoutError = TimeoutError;
+}

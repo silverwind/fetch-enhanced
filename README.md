@@ -13,8 +13,8 @@
 npm i fetch-enhanced node-fetch
 ```
 ```js
-const nodeFetch = require("node-fetch");
-const fetchEnhanced = require("fetch-enhanced");
+import nodeFetch from "node-fetch";
+import fetchEnhanced = from "fetch-enhanced";
 
 const fetch = fetchEnhanced(nodeFetch);
 
