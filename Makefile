@@ -14,7 +14,7 @@ unittest: node_modules
 	NODE_OPTIONS="--experimental-vm-modules --no-warnings" npx jest --color --watchAll
 
 update: node_modules
-	npx updates
+	npx updates -u
 	rm -rf node_modules
 	npm install
 	@touch node_modules
