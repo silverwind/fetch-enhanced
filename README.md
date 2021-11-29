@@ -17,7 +17,6 @@ import nodeFetch from "node-fetch";
 import fetchEnhanced from "fetch-enhanced";
 
 const fetch = fetchEnhanced(nodeFetch);
-
 await fetch("https://example.com");
 ```
 
@@ -28,6 +27,8 @@ await fetch("https://example.com");
 - `opts` *Object*
   - `agentCacheSize`: *number* Size of the agent cache. Default: `512`.
 
+Returns: A wrapped `fetch` function.
+
 ### fetch(url, [opts])
 
 - `opts` *Object*
@@ -36,12 +37,31 @@ await fetch("https://example.com");
   - `agentOpts`: *object* [Agent](https://nodejs.org/api/https.html#https_new_agent_options) [options](https://nodejs.org/api/http.html#http_new_agent_options). Default: `{maxSockets: 64, keepAlive: false}`
   - Any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
 
+### TimeoutError
+
+Error class that can be used for `err instanceof TimeoutError`:
+
+```js
+import {TimeoutError} from "fetch-enhanced";
+
+try {
+  await fetch("https://example.com", {timeout: 0});
+} catch (err) {
+  console.log(err instanceof TimeoutError);
+  // => true
+}
+```
+
 ### fetch.clearCache()
 
 Clear the agent cache and destroys all cached agents. This is generally only neccessary when the proxy environment variables are expected to change during runtime.
 
-### fetchEnhanced.TimeoutError
-
-Error class that can be used for `err instanceof TimeoutError`.
+```js
+process.env.HTTPS_PROXY = "https://proxy1.dev";
+await fetch("https://example.com");
+fetch.clearCache();
+process.env.HTTPS_PROXY = "https://proxy2.dev";
+await fetch("https://example.com");
+```
 
 © [silverwind](https://github.com/silverwind), distributed under BSD licence
