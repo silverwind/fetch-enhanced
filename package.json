@@ -21,15 +21,15 @@
     "http-proxy-agent": "^5.0.0",
     "https-proxy-agent": "^5.0.0",
     "proxy-from-env": "^1.1.0",
-    "quick-lru": "6.0.2"
+    "quick-lru": "6.1.1"
   },
   "devDependencies": {
-    "eslint": "8.3.0",
-    "eslint-config-silverwind": "46.1.0",
-    "jest": "27.4.0",
-    "node-fetch": "3.1.0",
+    "eslint": "8.13.0",
+    "eslint-config-silverwind": "48.3.0",
+    "jest": "27.5.1",
+    "node-fetch": "3.2.3",
     "proxy": "1.0.2",
-    "updates": "12.2.2",
-    "versions": "9.1.0"
+    "updates": "13.0.5",
+    "versions": "9.2.3"
   }
 }
