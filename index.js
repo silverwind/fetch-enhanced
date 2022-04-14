@@ -64,15 +64,9 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
       }
 
       // timeout
-      let timeoutId, controller;
+      let timeoutId;
       if (timeout) {
-        if (!("signal" in opts) && AbortController in globalThis) {
-          controller = new AbortController();
-          opts.signal = controller.signal;
-        }
-
         timeoutId = setTimeout(() => {
-          if (controller) controller.abort();
           const err = new TimeoutError(`${opts.method || "GET"} ${url} timed out after ${timeout}ms`);
           reject(err);
         }, timeout);
