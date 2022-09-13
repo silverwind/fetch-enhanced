@@ -19,7 +19,7 @@
   ],
   "dependencies": {
     "hpagent": "1.0.0",
-    "proxy-from-env": "^1.1.0",
+    "proxy-from-env": "1.1.0",
     "quick-lru": "6.1.1",
     "undici": "5.10.0"
   },
