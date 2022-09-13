@@ -68,6 +68,7 @@ test("timeout", async () => {
     await fetch(url, {timeout: 10});
     throw new Error("No error thrown");
   } catch (err) {
+    console.error(err);
     expect(err).toBeInstanceOf(TimeoutError);
   }
   expect(connects).toEqual(0);
