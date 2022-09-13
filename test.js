@@ -54,7 +54,7 @@ test("proxy working", async () => {
   expect(connects).toEqual(1);
 });
 
-// below test works but causes "Jest did not exit one second after the test run has completed" with traces pointing inside undici internals, disable it because of that.
+// below test works but causes "Jest did not exit one second after the test run has completed" because the proxy server connection hangs and does not clean up
 
 // test("proxy different", async () => {
 //   process.env.HTTP_PROXY = "http://192.0.2.1";
