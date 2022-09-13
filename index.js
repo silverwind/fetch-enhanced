@@ -86,6 +86,7 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
           const err = new TimeoutError(`${opts.method || "GET"} ${url} timed out after ${timeout}ms`);
           reject(err);
         }, timeout);
+        timeoutId?.unref?.();
       }
 
       fetchImplementation(url, opts).then(res => {
