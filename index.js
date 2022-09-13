@@ -41,7 +41,7 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
         protocol, port,
         hostname: hostname.replace(/^\[/, "").replace(/\]$/, ""), // ipv6 compat
         path: `${pathname}${search}${hash}`,
-        auth: username && password ? `${username}:${password}` : username ? username : null,
+        auth: username && password ? `${username}:${password}` : (username || null),
         ...agentOpts,
       });
     } else {
