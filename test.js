@@ -72,3 +72,9 @@ test("timeout", async () => {
   }
   expect(connects).toEqual(0);
 });
+
+test("no timeout", async () => {
+  const res = await fetch(url, {timeout: 1000});
+  expect(res.ok).toEqual(true);
+  expect(res.status).toEqual(204);
+});
