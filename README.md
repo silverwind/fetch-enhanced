@@ -1,22 +1,18 @@
 # fetch-enhanced
 [![](https://img.shields.io/npm/v/fetch-enhanced.svg?style=flat)](https://www.npmjs.org/package/fetch-enhanced) [![](https://img.shields.io/npm/dm/fetch-enhanced.svg)](https://www.npmjs.org/package/fetch-enhanced)
 
-`fetch-enhanced` wraps a provided `fetch`-like module like [node-fetch](https://github.com/node-fetch/node-fetch) and adds:
+`fetch-enhanced` wraps a provided `fetch`-like function like [fetch](https://nodejs.org/dist/latest-v18.x/docs/api/globals.html#fetch) or [node-fetch](https://github.com/node-fetch/node-fetch) and adds:
 
 - HTTP Proxy discovery from standard environment variables
 - HTTP Request Timeout support
-- Accessible [agent](https://nodejs.org/api/https.html#https_new_agent_options) [options](https://nodejs.org/api/http.html#http_new_agent_options)
+- Accessible [agent/dispatcher](https://nodejs.org/api/https.html#https_new_agent_options) [options](https://nodejs.org/api/http.html#http_new_agent_options)
 
 ## Usage
 
-```bash
-npm i fetch-enhanced node-fetch
-```
 ```js
-import nodeFetch from "node-fetch";
 import fetchEnhanced from "fetch-enhanced";
 
-const fetch = fetchEnhanced(nodeFetch);
+const fetch = fetchEnhanced(globalThis.fetch);
 await fetch("https://example.com");
 ```
 
@@ -34,7 +30,7 @@ Returns: A wrapped `fetch` function.
 - `opts` *Object*
   - `timeout`: *number* Request timeout in milliseconds. Default: 0 (meaning no timeout).
   - `agent`: *http.Agent* Custom HTTP agent. When specified, proxy discovery will no longer work.
-  - `agentOpts`: *object* [Agent](https://nodejs.org/api/https.html#https_new_agent_options) [options](https://nodejs.org/api/http.html#http_new_agent_options). Default: `{maxSockets: 64, keepAlive: false}`
+  - `agentOpts`: *object* [Agent](https://nodejs.org/api/https.html#https_new_agent_options) or [Dispatcher](https://github.com/nodejs/undici/blob/main/docs/api/ProxyAgent.md#parameter-proxyagentoptions) [options](https://nodejs.org/api/http.html#http_new_agent_options). Default: `{maxSockets: 64, keepAlive: false}`
   - Any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
 
 ### TimeoutError

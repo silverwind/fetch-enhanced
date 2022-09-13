@@ -1,3 +1,4 @@
+import {ProxyAgent as UndiciProxyAgent, Agent as UndiciAgent} from "undici";
 import {HttpProxyAgent, HttpsProxyAgent} from "hpagent";
 import QuickLRU from "quick-lru";
 import {getProxyForUrl} from "proxy-from-env";
@@ -25,7 +26,7 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
   const opts = {...defaultModuleOpts, ...moduleOpts};
   const agentCache = new QuickLRU({maxSize: opts.agentCacheSize});
 
-  function getAgent(url, agentOpts = {}) {
+  function getAgent(url, agentOpts = {}, isUndici) {
     const {origin, protocol} = new URL(url);
 
     const agentCacheKey = JSON.stringify({origin, ...agentOpts});
@@ -34,10 +35,33 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
     let agent;
     const isHttps = protocol === "https:";
     const proxyUrl = getProxyForUrl(url);
-    if (proxyUrl) {
-      agent = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)({...agentOpts, proxy: proxyUrl});
+
+    if (isUndici) {
+      // https://github.com/nodejs/undici/blob/main/docs/api/Client.md#parameter-clientoptions
+      const undiciOpts = {...agentOpts};
+
+      // undici does not support keepAlive option
+      if ("keepAlive" in undiciOpts) {
+        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0;
+        delete undiciOpts.keepAlive;
+      }
+
+      // undici does not support maxSockets option
+      if ("maxSockets" in undiciOpts) {
+        delete undiciOpts.maxSockets;
+      }
+
+      if (proxyUrl) {
+        agent = new UndiciProxyAgent({...undiciOpts, uri: proxyUrl});
+      } else {
+        agent = new UndiciAgent(undiciOpts);
+      }
     } else {
-      agent = new (isHttps ? HttpsAgent : HttpAgent)(agentOpts);
+      if (proxyUrl) {
+        agent = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)({...agentOpts, proxy: proxyUrl});
+      } else {
+        agent = new (isHttps ? HttpsAgent : HttpAgent)(agentOpts);
+      }
     }
 
     agentCache.set(agentCacheKey, agent);
@@ -46,9 +70,13 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
 
   const fetch = (url, {timeout = 0, agentOpts = {}, ...opts} = {}) => {
     return new Promise((resolve, reject) => {
+      const isUndici = fetchImplementation === globalThis.fetch;
+
       // proxy
-      if (!("agent" in opts)) {
-        opts.agent = getAgent(url, {...defaultAgentOpts, ...agentOpts});
+      if (!isUndici && !("agent" in opts)) {
+        opts.agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
+      } else if (isUndici && !("dispatcher" in opts)) {
+        opts.dispatcher = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
       }
 
       // timeout

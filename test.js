@@ -4,7 +4,8 @@ import nodeFetch from "node-fetch";
 import proxy from "proxy";
 import {promisify} from "util";
 
-const fetch = fetchEnhanced(nodeFetch);
+const nodeGreater18 = Number(process.versions.node.split(".")[0]) >= 18;
+const fetch = fetchEnhanced(nodeGreater18 ? globalThis.fetch : nodeFetch);
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 function makeUrl(server) {
