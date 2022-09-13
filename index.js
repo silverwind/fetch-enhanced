@@ -1,5 +1,4 @@
-import HttpProxyAgent from "http-proxy-agent";
-import HttpsProxyAgent from "https-proxy-agent";
+import {HttpProxyAgent, HttpsProxyAgent} from "hpagent";
 import QuickLRU from "quick-lru";
 import {getProxyForUrl} from "proxy-from-env";
 import {Agent as HttpAgent} from "http";
@@ -36,20 +35,9 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
     const isHttps = protocol === "https:";
     const proxyUrl = getProxyForUrl(url);
     if (proxyUrl) {
-      const {protocol, username, password, hostname, port, pathname, search, hash} = new URL(proxyUrl);
-      agent = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)({
-        protocol, port,
-        hostname: hostname.replace(/^\[/, "").replace(/\]$/, ""), // ipv6 compat
-        path: `${pathname}${search}${hash}`,
-        auth: username && password ? `${username}:${password}` : (username || null),
-        ...agentOpts,
-      });
+      agent = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)({...agentOpts, proxy: proxyUrl});
     } else {
       agent = new (isHttps ? HttpsAgent : HttpAgent)(agentOpts);
-      if ("maxSockets" in agentOpts) {
-        // this option is not exposed in constructor for some reason
-        agent.maxSockets = agentOpts.maxSockets;
-      }
     }
 
     agentCache.set(agentCacheKey, agent);
