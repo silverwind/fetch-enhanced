@@ -6,7 +6,7 @@ import proxy from "proxy";
 import {promisify} from "util";
 
 const fetch = fetchEnhanced(globalThis.fetch || nodeFetch);
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms).unref());
 
 function makeUrl(server) {
   const {port} = server.address();
@@ -63,10 +63,12 @@ test("proxy working", async () => {
 //   expect(connects).toEqual(0);
 // });
 
-test("no proxy timeout", async () => {
-  await expect(fetch(url, {timeout: 100})).rejects.toThrow(TimeoutError);
-  const res = await fetch(url, {timeout: 1000});
-  expect(res.ok).toEqual(true);
-  expect(res.status).toEqual(204);
+test("timeout", async () => {
+  try {
+    await fetch(url, {timeout: 10});
+    throw new Error("No error thrown");
+  } catch (err) {
+    expect(err).toBeInstanceOf(TimeoutError);
+  }
   expect(connects).toEqual(0);
 });

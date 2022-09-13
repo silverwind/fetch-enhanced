@@ -29,7 +29,7 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
   function getAgent(url, agentOpts = {}, isUndici) {
     const {origin, protocol} = new URL(url);
 
-    const agentCacheKey = JSON.stringify({origin, ...agentOpts});
+    const agentCacheKey = JSON.stringify({origin, isUndici, ...agentOpts});
     if (agentCache.peek(agentCacheKey)) return agentCache.get(agentCacheKey);
 
     let agent;
