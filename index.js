@@ -73,11 +73,12 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
       const isUndici = fetchImplementation === globalThis.fetch;
 
       // proxy
-      if (!isUndici && !("agent" in opts)) {
+      if (!isUndici && !("agent" in opts) && !opts.noProxy) {
         opts.agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
       } else if (isUndici && !("dispatcher" in opts)) {
         opts.dispatcher = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
       }
+      delete opts.noProxy;
 
       // timeout
       let timeoutId, controller;
