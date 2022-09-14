@@ -36,11 +36,6 @@ beforeAll(async () => {
 
   connects = 0;
   proxyServer.on("connect", () => connects++);
-
-  console.info(`server listening on ${url}`);
-  console.info(`proxy listening on ${proxyUrl}`);
-
-  fetch.clearCache();
 });
 
 afterAll(async () => {
@@ -79,7 +74,6 @@ test("timeout", async () => {
 });
 
 test("no timeout", async () => {
-  fetch.clearCache();
   const res = await fetch(url, {timeout: 1000, agentOpts: {noProxy: true}});
   expect(res.ok).toEqual(true);
   expect(res.status).toEqual(204);
