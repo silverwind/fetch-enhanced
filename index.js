@@ -35,6 +35,8 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
     let agent;
     const isHttps = protocol === "https:";
     const proxyUrl = getProxyForUrl(url);
+    const noProxy = agentOpts?.noProxy;
+    if ("noProxy" in agentOpts) delete agentOpts.noProxy;
 
     if (isUndici) {
       // https://github.com/nodejs/undici/blob/main/docs/api/Client.md#parameter-clientoptions
@@ -51,13 +53,13 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
         delete undiciOpts.maxSockets;
       }
 
-      if (proxyUrl) {
+      if (proxyUrl && !noProxy) {
         agent = new UndiciProxyAgent({...undiciOpts, uri: proxyUrl});
       } else {
         agent = new UndiciAgent(undiciOpts);
       }
     } else {
-      if (proxyUrl) {
+      if (proxyUrl && !noProxy) {
         agent = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)({...agentOpts, proxy: proxyUrl});
       } else {
         agent = new (isHttps ? HttpsAgent : HttpAgent)(agentOpts);
@@ -73,12 +75,11 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
       const isUndici = fetchImplementation === globalThis.fetch;
 
       // proxy
-      if (!isUndici && !("agent" in opts) && !opts.noProxy) {
+      if (!isUndici && !("agent" in opts)) {
         opts.agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
       } else if (isUndici && !("dispatcher" in opts)) {
         opts.dispatcher = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
       }
-      delete opts.noProxy;
 
       // timeout
       let timeoutId, controller;

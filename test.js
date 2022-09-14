@@ -65,7 +65,7 @@ test("proxy working", async () => {
 
 test("timeout", async () => {
   try {
-    await fetch(url, {timeout: 10, noProxy: true});
+    await fetch(url, {timeout: 10, agentOpts: {noProxy: true}});
     throw new Error("No error thrown");
   } catch (err) {
     if (!(err instanceof TimeoutError)) {
@@ -77,7 +77,7 @@ test("timeout", async () => {
 
 test("no timeout", async () => {
   fetch.clearCache();
-  const res = await fetch(url, {timeout: 1000, noProxy: true});
+  const res = await fetch(url, {timeout: 1000, agentOpts: {noProxy: true}});
   expect(res.ok).toEqual(true);
   expect(res.status).toEqual(204);
 });
