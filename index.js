@@ -1,4 +1,4 @@
-import {ProxyAgent as UndiciProxyAgent, Agent as UndiciAgent} from "undici";
+import {ProxyAgent as UndiciProxyAgent, Agent as UndiciAgent, fetch as undiciFetch} from "undici";
 import {HttpProxyAgent, HttpsProxyAgent} from "hpagent";
 import QuickLRU from "quick-lru";
 import {getProxyForUrl} from "proxy-from-env";
@@ -71,7 +71,7 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
 
   const fetch = (url, {timeout = 0, agentOpts = {}, ...opts} = {}) => {
     return new Promise((resolve, reject) => {
-      const isUndici = fetchImplementation === globalThis.fetch;
+      const isUndici = [globalThis.fetch, undiciFetch].includes(fetchImplementation);
 
       // proxy
       if (!isUndici && !("agent" in opts)) {
