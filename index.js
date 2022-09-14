@@ -48,6 +48,8 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
       }
 
       // undici does not support maxSockets option
+      // TODO: check if connections does the same
+      // https://github.com/nodejs/undici/blob/main/docs/api/Pool.md#parameter-pooloptions
       if ("maxSockets" in undiciOpts) {
         delete undiciOpts.maxSockets;
       }
