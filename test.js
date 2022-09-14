@@ -11,7 +11,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms).unref());
 
 function makeUrl(server) {
   const {port} = server.address();
-  return String(Object.assign(new URL("http://localhost"), {port})).replace(/\/$/, "");
+  return String(Object.assign(new URL("http://127.0.0.1"), {port})).replace(/\/$/, "");
 }
 
 let server, proxyServer, url, proxyUrl, connects;
