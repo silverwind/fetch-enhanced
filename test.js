@@ -55,7 +55,7 @@ afterAll(async () => {
 
 describe("serial tests", () => {
   test("proxy working", async () => {
-    const res = await fetch(url);
+    const res = await fetch(url, {method: "HEAD"});
     expect(res.ok).toEqual(true);
     expect(res.status).toEqual(204);
     expect(proxyConnects).toEqual(1);
@@ -64,7 +64,7 @@ describe("serial tests", () => {
 
   test("timeout proxy", async () => {
     try {
-      await fetch(url, {timeout: 50});
+      await fetch(url, {method: "HEAD", timeout: 50});
       throw new Error("No error thrown");
     } catch (err) {
       if (!(err instanceof TimeoutError)) {
@@ -77,16 +77,17 @@ describe("serial tests", () => {
   });
 
   // below test works but causes jest to not exit cleanly because of open handles
+  // it seems undici ignores the abort signal
   // test("proxy not existant", async () => {
   //   process.env.HTTP_PROXY = "http://192.0.2.1";
   //   process.env.HTTPS_PROXY = "http://192.0.2.1";
-  //   await expect(fetch(url, {timeout: 200})).rejects.toThrow(TimeoutError);
+  //   await expect(fetch(url, {method: "HEAD", timeout: 200})).rejects.toThrow(TimeoutError);
   //   expect(proxyConnects).toEqual(serverConnects);
   // });
 
   test("timeout no proxy", async () => {
     try {
-      await fetch(url, {timeout: 50, agentOpts: {noProxy: true}});
+      await fetch(url, {method: "HEAD", timeout: 20, agentOpts: {noProxy: true}});
       throw new Error("No error thrown");
     } catch (err) {
       if (!(err instanceof TimeoutError)) {
@@ -98,7 +99,7 @@ describe("serial tests", () => {
   });
 
   test("no timeout", async () => {
-    const res = await fetch(url, {timeout: 1000, agentOpts: {noProxy: true}});
+    const res = await fetch(url, {method: "HEAD", timeout: 1000, agentOpts: {noProxy: true}});
     expect(res.ok).toEqual(true);
     expect(res.status).toEqual(204);
     expect(proxyConnects).toBeLessThan(serverConnects);
