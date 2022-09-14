@@ -58,7 +58,8 @@ describe("serial tests", () => {
     const res = await fetch(url);
     expect(res.ok).toEqual(true);
     expect(res.status).toEqual(204);
-    expect(proxyConnects).toEqual(serverConnects);
+    expect(proxyConnects).toEqual(1);
+    expect(serverConnects).toEqual(1);
   });
 
   test("timeout proxy", async () => {
@@ -71,7 +72,8 @@ describe("serial tests", () => {
       }
       expect(err).toBeInstanceOf(TimeoutError);
     }
-    expect(proxyConnects).toEqual(serverConnects);
+    expect(proxyConnects).toEqual(2);
+    expect(serverConnects).toEqual(2);
   });
 
   // below test works but causes jest to not exit cleanly because of open handles
