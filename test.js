@@ -16,7 +16,7 @@ function makeUrl(server) {
 
 let server, proxyServer, url, proxyUrl, connects;
 
-beforeEach(async () => {
+beforeAll(async () => {
   delete process.env.HTTP_PROXY;
   delete process.env.HTTPS_PROXY;
 
@@ -43,7 +43,7 @@ beforeEach(async () => {
   fetch.clearCache();
 });
 
-afterEach(async () => {
+afterAll(async () => {
   server.destroy();
   proxyServer.destroy();
 });
