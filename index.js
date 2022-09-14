@@ -1,4 +1,4 @@
-import {ProxyAgent as UndiciProxyAgent, Agent as UndiciAgent} from "undici";
+import {ProxyAgent as UndiciProxyAgent} from "undici";
 import {HttpProxyAgent, HttpsProxyAgent} from "hpagent";
 import QuickLRU from "quick-lru";
 import {getProxyForUrl} from "proxy-from-env";
@@ -56,7 +56,7 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
       if (proxyUrl && !noProxy) {
         agent = new UndiciProxyAgent({...undiciOpts, uri: proxyUrl});
       } else {
-        agent = new UndiciAgent(undiciOpts);
+        return null;
       }
     } else {
       if (proxyUrl && !noProxy) {
@@ -76,9 +76,11 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
 
       // proxy
       if (!isUndici && !("agent" in opts)) {
-        opts.agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
+        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
+        if (agent) opts.agent = agent;
       } else if (isUndici && !("dispatcher" in opts)) {
-        opts.dispatcher = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
+        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
+        if (agent) opts.dispatcher = agent;
       }
 
       // timeout
