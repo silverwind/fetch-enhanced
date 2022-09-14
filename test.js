@@ -21,7 +21,7 @@ beforeAll(async () => {
   delete process.env.HTTPS_PROXY;
 
   server = http.createServer(async function onRequest(_, res) {
-    await sleep(200);
+    await sleep(500);
     res.statusCode = 204;
     res.end();
   });
@@ -35,7 +35,9 @@ beforeAll(async () => {
   proxyUrl = makeUrl(proxyServer);
 
   connects = 0;
-  proxyServer.on("connect", () => connects++);
+  proxyServer.on("connection", () => {
+    connects++;
+  });
 });
 
 afterAll(async () => {
@@ -43,38 +45,40 @@ afterAll(async () => {
   proxyServer.destroy();
 });
 
-test("proxy working", async () => {
-  process.env.HTTP_PROXY = proxyUrl;
-  process.env.HTTPS_PROXY = proxyUrl;
-  const res = await fetch(url);
-  expect(res.ok).toEqual(true);
-  expect(res.status).toEqual(204);
-  expect(connects).toEqual(1);
-});
+describe("serial tests", () => {
+  test("proxy working", async () => {
+    process.env.HTTP_PROXY = proxyUrl;
+    process.env.HTTPS_PROXY = proxyUrl;
+    const res = await fetch(url);
+    expect(res.ok).toEqual(true);
+    expect(res.status).toEqual(204);
+    expect(connects).toEqual(1);
+  });
 
-// below test works but causes "Jest did not exit one second after the test run has completed" because the proxy server connection hangs and does not clean up
-
-// test("proxy different", async () => {
-//   process.env.HTTP_PROXY = "http://192.0.2.1";
-//   process.env.HTTPS_PROXY = "http://192.0.2.1";
-//   await expect(fetch(url, {timeout: 100})).rejects.toThrow(TimeoutError);
-//   expect(connects).toEqual(0);
-// });
-
-test("timeout", async () => {
-  try {
-    await fetch(url, {timeout: 10, agentOpts: {noProxy: true}});
-    throw new Error("No error thrown");
-  } catch (err) {
-    if (!(err instanceof TimeoutError)) {
-      console.error(err);
+  test("timeout", async () => {
+    try {
+      await fetch(url, {timeout: 50, agentOpts: {noProxy: true}});
+      throw new Error("No error thrown");
+    } catch (err) {
+      if (!(err instanceof TimeoutError)) {
+        console.error(err);
+      }
+      expect(err).toBeInstanceOf(TimeoutError);
     }
-    expect(err).toBeInstanceOf(TimeoutError);
-  }
-});
+    expect(connects).toEqual(1);
+  });
 
-test("no timeout", async () => {
-  const res = await fetch(url, {timeout: 1000, agentOpts: {noProxy: true}});
-  expect(res.ok).toEqual(true);
-  expect(res.status).toEqual(204);
+  // test("proxy different", async () => {
+  //   process.env.HTTP_PROXY = "http://192.0.2.1";
+  //   process.env.HTTPS_PROXY = "http://192.0.2.1";
+  //   await expect(fetch(url, {timeout: 200})).rejects.toThrow(TimeoutError);
+  //   expect(connects).toEqual(1);
+  // });
+
+  test("no timeout", async () => {
+    const res = await fetch(url, {timeout: 1000, agentOpts: {noProxy: true}});
+    expect(res.ok).toEqual(true);
+    expect(res.status).toEqual(204);
+    expect(connects).toEqual(1);
+  });
 });

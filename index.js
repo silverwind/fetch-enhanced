@@ -28,13 +28,14 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
 
   function getAgent(url, agentOpts = {}, isUndici) {
     const {origin, protocol} = new URL(url);
+    const proxyUrl = getProxyForUrl(url);
 
-    const agentCacheKey = JSON.stringify({origin, isUndici, ...agentOpts});
+    const agentCacheKey = JSON.stringify({proxyUrl, origin, isUndici, ...agentOpts});
     if (agentCache.peek(agentCacheKey)) return agentCache.get(agentCacheKey);
 
     let agent;
     const isHttps = protocol === "https:";
-    const proxyUrl = getProxyForUrl(url);
+
     const noProxy = agentOpts?.noProxy;
     if ("noProxy" in agentOpts) delete agentOpts.noProxy;
 
