@@ -28,22 +28,20 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
 
   function getAgent(url, agentOpts = {}, isUndici) {
     const {origin, protocol} = new URL(url);
-    const proxyUrl = getProxyForUrl(url);
+    const proxyUrl = agentOpts?.noProxy ? null : getProxyForUrl(url);
 
     const agentCacheKey = JSON.stringify({proxyUrl, origin, isUndici, ...agentOpts});
-    if (agentCache.peek(agentCacheKey)) return agentCache.get(agentCacheKey);
+    if (agentCache.has(agentCacheKey)) return agentCache.get(agentCacheKey);
 
     let agent;
     const isHttps = protocol === "https:";
-
-    const noProxy = agentOpts?.noProxy;
     if ("noProxy" in agentOpts) delete agentOpts.noProxy;
 
     if (isUndici) {
       // https://github.com/nodejs/undici/blob/main/docs/api/Client.md#parameter-clientoptions
       const undiciOpts = {...agentOpts};
 
-      // undici does not support keepAlive option
+      // undici supports disabling keepAlive via pipelining = 0
       if ("keepAlive" in undiciOpts) {
         undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0;
         delete undiciOpts.keepAlive;
@@ -54,13 +52,13 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
         delete undiciOpts.maxSockets;
       }
 
-      if (proxyUrl && !noProxy) {
+      if (proxyUrl) {
         agent = new UndiciProxyAgent({...undiciOpts, uri: proxyUrl});
       } else {
         agent = new UndiciAgent(undiciOpts);
       }
     } else {
-      if (proxyUrl && !noProxy) {
+      if (proxyUrl) {
         agent = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)({...agentOpts, proxy: proxyUrl});
       } else {
         agent = new (isHttps ? HttpsAgent : HttpAgent)(agentOpts);
@@ -87,7 +85,7 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
       // timeout
       let timeoutId, controller;
       if (timeout) {
-        if (!("signal" in opts) && globalThis.AbortController) {
+        if (!("signal" in opts) && globalThis.AbortController) { // node 15+
           controller = new AbortController();
           opts.signal = controller.signal;
         }
