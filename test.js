@@ -37,6 +37,9 @@ beforeEach(async () => {
   connects = 0;
   proxyServer.on("connect", () => connects++);
 
+  console.info(`server listening on ${url}`);
+  console.info(`proxy listening on ${proxyUrl}`);
+
   fetch.clearCache();
 });
 
