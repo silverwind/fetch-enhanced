@@ -10,9 +10,10 @@
 ## Usage
 
 ```js
+import {fetch as undiciFetch} from "undici";
 import fetchEnhanced from "fetch-enhanced";
 
-const fetch = fetchEnhanced(globalThis.fetch);
+const fetch = fetchEnhanced(undiciFetch);
 await fetch("https://example.com");
 ```
 
