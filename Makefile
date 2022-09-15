@@ -20,15 +20,15 @@ publish: node_modules
 	git push -u --tags origin master
 	npm publish
 
-patch: node_modules test
+patch: node_modules lint test
 	npx versions -C patch
 	@$(MAKE) --no-print-directory publish
 
-minor: node_modules test
+minor: node_modules lint test
 	npx versions -C minor
 	@$(MAKE) --no-print-directory publish
 
-major: node_modules test
+major: node_modules lint test
 	npx versions -C major
 	@$(MAKE) --no-print-directory publish
 
