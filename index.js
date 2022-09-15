@@ -47,10 +47,9 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
         delete undiciOpts.keepAlive;
       }
 
-      // undici does not support maxSockets option
-      // TODO: check if connections does the same
-      // https://github.com/nodejs/undici/blob/main/docs/api/Pool.md#parameter-pooloptions
+      // undici supports limiting parallel sockets via connections
       if ("maxSockets" in undiciOpts) {
+        undiciOpts.connections = undiciOpts.maxSockets;
         delete undiciOpts.maxSockets;
       }
 
