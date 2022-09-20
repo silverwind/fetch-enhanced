@@ -6,7 +6,7 @@
   "repository": "silverwind/fetch-enhanced",
   "license": "BSD-2-Clause",
   "type": "module",
-  "main": "./index.js",
+  "exports": "./index.js",
   "engines": {
     "node": ">= 16"
   },
