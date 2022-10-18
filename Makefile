@@ -7,8 +7,8 @@ deps: node_modules
 lint: node_modules
 	npx eslint --color .
 
-test: node_modules
-	NODE_OPTIONS="--experimental-vm-modules --no-warnings" npx jest --color
+test: node_modules lint
+	npx vitest
 
 update: node_modules
 	npx updates -u
