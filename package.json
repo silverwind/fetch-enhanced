@@ -14,20 +14,20 @@
     "index.js"
   ],
   "dependencies": {
-    "hpagent": "1.0.0",
+    "hpagent": "1.1.0",
     "proxy-from-env": "1.1.0",
     "quick-lru": "6.1.1",
-    "undici": "^5.10.0"
+    "undici": "5.11.0"
   },
   "devDependencies": {
-    "eslint": "8.23.1",
-    "eslint-config-silverwind": "54.0.2",
+    "eslint": "8.25.0",
+    "eslint-config-silverwind": "59.0.0",
     "get-port": "6.1.2",
     "node-fetch": "3.2.10",
     "proxy": "1.0.2",
     "server-destroy": "1.0.1",
-    "updates": "13.1.5",
-    "versions": "9.3.0",
+    "updates": "13.1.9",
+    "versions": "9.3.4",
     "vitest": "0.24.3"
   },
   "keywords": [
