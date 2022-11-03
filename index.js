@@ -1,4 +1,4 @@
-import {ProxyAgent as UndiciProxyAgent, Agent as UndiciAgent, fetch as undiciFetch} from "undici";
+import {ProxyAgent as UndiciProxyAgent, Agent as UndiciAgent} from "undici";
 import {HttpProxyAgent, HttpsProxyAgent} from "hpagent";
 import QuickLRU from "quick-lru";
 import {getProxyForUrl} from "proxy-from-env";
@@ -7,6 +7,7 @@ import {Agent as HttpsAgent} from "https";
 
 const defaultModuleOpts = {
   agentCacheSize: 512,
+  undici: false,
 };
 
 const defaultAgentOpts = {
@@ -26,18 +27,18 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
   const opts = {...defaultModuleOpts, ...moduleOpts};
   const agentCache = new QuickLRU({maxSize: opts.agentCacheSize});
 
-  function getAgent(url, agentOpts = {}, isUndici) {
+  function getAgent(url, agentOpts = {}) {
     const {origin, protocol} = new URL(url);
     const proxyUrl = agentOpts?.noProxy ? null : getProxyForUrl(url);
 
-    const agentCacheKey = JSON.stringify({proxyUrl, origin, isUndici, ...agentOpts});
+    const agentCacheKey = JSON.stringify({proxyUrl, origin, ...agentOpts});
     if (agentCache.has(agentCacheKey)) return agentCache.get(agentCacheKey);
 
     let agent;
     const isHttps = protocol === "https:";
     if ("noProxy" in agentOpts) delete agentOpts.noProxy;
 
-    if (isUndici) {
+    if (moduleOpts.undici) {
       // https://github.com/nodejs/undici/blob/main/docs/api/Client.md#parameter-clientoptions
       const undiciOpts = {...agentOpts};
 
@@ -72,14 +73,12 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
 
   const fetch = (url, {timeout = 0, agentOpts = {}, ...opts} = {}) => {
     return new Promise((resolve, reject) => {
-      const isUndici = [globalThis.fetch, undiciFetch].includes(fetchImplementation);
-
       // proxy
-      if (!isUndici && !("agent" in opts)) {
-        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
+      if (!moduleOpts.undici && !("agent" in opts)) {
+        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, moduleOpts.undici);
         if (agent) opts.agent = agent;
-      } else if (isUndici && !("dispatcher" in opts)) {
-        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, isUndici);
+      } else if (moduleOpts.undici && !("dispatcher" in opts)) {
+        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, moduleOpts.undici);
         if (agent) opts.dispatcher = agent;
       }
 

@@ -23,6 +23,7 @@ await fetch("https://example.com");
 - fetchImplementation: *Function* A `fetch`-like module that takes `(url, opts)` and a `agent` option.
 - `opts` *Object*
   - `agentCacheSize`: *number* Size of the agent cache. Default: `512`.
+  - `undici`: *boolean* Whether the fetch implementation is undici. Default: `false`.
 
 Returns: A wrapped `fetch` function.
 

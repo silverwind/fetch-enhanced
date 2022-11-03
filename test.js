@@ -2,11 +2,11 @@ import fetchEnhanced, {TimeoutError} from "./index.js";
 import enableDestroy from "server-destroy";
 import http from "http";
 import nodeFetch from "node-fetch";
+import {fetch as undiciFetch} from "undici";
 import {promisify} from "util";
 import getPort from "get-port";
 import proxy from "proxy";
 
-const fetch = fetchEnhanced(globalThis.fetch || nodeFetch);
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms).unref());
 
 function makeUrl(server) {
@@ -53,7 +53,14 @@ afterAll(async () => {
   proxyServer.destroy();
 });
 
-describe("serial tests", () => {
+describe("node-fetch", () => {
+  const fetch = fetchEnhanced(nodeFetch);
+
+  afterAll(() => {
+    serverConnects = 0;
+    proxyConnects = 0;
+  });
+
   test("proxy working", async () => {
     const res = await fetch(url, {method: "HEAD"});
     expect(res.ok).toEqual(true);
@@ -76,14 +83,56 @@ describe("serial tests", () => {
     expect(serverConnects).toEqual(2);
   });
 
-  // below test works but causes jest to not exit cleanly because of open handles
-  // it seems undici ignores the abort signal
-  // test("proxy not existant", async () => {
-  //   process.env.HTTP_PROXY = "http://192.0.2.1";
-  //   process.env.HTTPS_PROXY = "http://192.0.2.1";
-  //   await expect(fetch(url, {method: "HEAD", timeout: 200})).rejects.toThrow(TimeoutError);
-  //   expect(proxyConnects).toEqual(serverConnects);
-  // });
+  test("timeout no proxy", async () => {
+    try {
+      await fetch(url, {method: "HEAD", timeout: 20, agentOpts: {noProxy: true}});
+      throw new Error("No error thrown");
+    } catch (err) {
+      if (!(err instanceof TimeoutError)) {
+        console.error(err);
+      }
+      expect(err).toBeInstanceOf(TimeoutError);
+    }
+    expect(proxyConnects).toBeLessThan(serverConnects);
+  });
+
+  test("no timeout", async () => {
+    const res = await fetch(url, {method: "HEAD", timeout: 1000, agentOpts: {noProxy: true}});
+    expect(res.ok).toEqual(true);
+    expect(res.status).toEqual(204);
+    expect(proxyConnects).toBeLessThan(serverConnects);
+  });
+});
+
+describe("undici", () => {
+  const fetch = fetchEnhanced(undiciFetch, {undici: true});
+
+  afterAll(() => {
+    serverConnects = 0;
+    proxyConnects = 0;
+  });
+
+  test("proxy working", async () => {
+    const res = await fetch(url, {method: "HEAD"});
+    expect(res.ok).toEqual(true);
+    expect(res.status).toEqual(204);
+    expect(proxyConnects).toEqual(1);
+    expect(serverConnects).toEqual(1);
+  });
+
+  test("timeout proxy", async () => {
+    try {
+      await fetch(url, {method: "HEAD", timeout: 50});
+      throw new Error("No error thrown");
+    } catch (err) {
+      if (!(err instanceof TimeoutError)) {
+        console.error(err);
+      }
+      expect(err).toBeInstanceOf(TimeoutError);
+    }
+    expect(proxyConnects).toEqual(2);
+    expect(serverConnects).toEqual(2);
+  });
 
   test("timeout no proxy", async () => {
     try {
