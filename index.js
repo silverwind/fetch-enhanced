@@ -75,10 +75,10 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
     return new Promise((resolve, reject) => {
       // proxy
       if (!moduleOpts.undici && !("agent" in opts)) {
-        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, moduleOpts.undici);
+        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts});
         if (agent) opts.agent = agent;
       } else if (moduleOpts.undici && !("dispatcher" in opts)) {
-        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts}, moduleOpts.undici);
+        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts});
         if (agent) opts.dispatcher = agent;
       }
 
