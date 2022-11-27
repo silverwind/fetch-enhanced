@@ -20,7 +20,7 @@ await fetch("https://example.com");
 ## API
 ### fetchEnhanced(fetchImplementation, opts)
 
-- fetchImplementation: *Function* A `fetch`-like module that takes `(url, opts)` and a `agent` option.
+- fetchImplementation: *Function* A `fetch`-like module that takes `(url, opts)` and a `agent` (like `node-fetch`) or `dispatcher` (like `undici`) option.
 - `opts` *Object* Required.
   - `agentCacheSize`: *number* Size of the agent cache. Default: `512`.
   - `undici`: *boolean* Whether the fetch implementation is undici. Required.
