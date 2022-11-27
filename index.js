@@ -7,7 +7,6 @@ import {Agent as HttpsAgent} from "https";
 
 const defaultModuleOpts = {
   agentCacheSize: 512,
-  undici: false,
 };
 
 const defaultAgentOpts = {
@@ -24,6 +23,7 @@ export class TimeoutError extends Error {
 }
 
 export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
+  if (!("undici" in moduleOpts)) throw new Error(`The 'undici' option is required`);
   const opts = {...defaultModuleOpts, ...moduleOpts};
   const agentCache = new QuickLRU({maxSize: opts.agentCacheSize});
 

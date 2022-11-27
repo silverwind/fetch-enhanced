@@ -13,17 +13,17 @@
 import {fetch as undiciFetch} from "undici";
 import fetchEnhanced from "fetch-enhanced";
 
-const fetch = fetchEnhanced(undiciFetch);
+const fetch = fetchEnhanced(undiciFetch, {undici: true});
 await fetch("https://example.com");
 ```
 
 ## API
-### fetchEnhanced(fetchImplementation, [opts])
+### fetchEnhanced(fetchImplementation, opts)
 
 - fetchImplementation: *Function* A `fetch`-like module that takes `(url, opts)` and a `agent` option.
-- `opts` *Object*
+- `opts` *Object* Required.
   - `agentCacheSize`: *number* Size of the agent cache. Default: `512`.
-  - `undici`: *boolean* Whether the fetch implementation is undici. Default: `false`.
+  - `undici`: *boolean* Whether the fetch implementation is undici. Required.
 
 Returns: A wrapped `fetch` function.
 

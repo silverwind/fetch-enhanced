@@ -54,7 +54,7 @@ afterAll(async () => {
 });
 
 describe("node-fetch", () => {
-  const fetch = fetchEnhanced(nodeFetch);
+  const fetch = fetchEnhanced(nodeFetch, {undici: false});
 
   afterAll(() => {
     serverConnects = 0;
