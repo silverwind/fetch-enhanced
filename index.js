@@ -43,8 +43,8 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
       const undiciOpts = {...agentOpts};
 
       // undici supports disabling keepAlive via pipelining = 0
-      if ("keepAlive" in undiciOpts) {
-        undiciOpts.pipelining = undiciOpts.keepAlive ? (undiciOpts.pipelining ?? 1) : 0;
+      if (("keepAlive" in undiciOpts) && !("pipelining" in undiciOpts)) {
+        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0;
         delete undiciOpts.keepAlive;
       }
 
