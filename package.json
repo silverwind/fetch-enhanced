@@ -20,15 +20,15 @@
     "undici": "5.13.0"
   },
   "devDependencies": {
-    "eslint": "8.28.0",
-    "eslint-config-silverwind": "63.0.0",
+    "eslint": "8.29.0",
+    "eslint-config-silverwind": "64.0.1",
     "get-port": "6.1.2",
     "node-fetch": "3.3.0",
     "proxy": "1.0.2",
     "server-destroy": "1.0.1",
-    "updates": "13.2.2",
-    "versions": "10.2.4",
-    "vitest": "0.25.3"
+    "updates": "13.2.3",
+    "versions": "10.4.0",
+    "vitest": "0.25.5"
   },
   "keywords": [
     "fetch",
