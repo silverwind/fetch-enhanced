@@ -35,7 +35,6 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
     if (agentCache.has(agentCacheKey)) return agentCache.get(agentCacheKey);
 
     let agent;
-    const isHttps = protocol === "https:";
     if ("noProxy" in agentOpts) delete agentOpts.noProxy;
 
     if (moduleOpts.undici) {
@@ -62,6 +61,7 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
         agent = new UndiciAgent(undiciOpts);
       }
     } else {
+      const isHttps = protocol === "https:";
       if (proxyUrl) {
         agent = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)({...agentOpts, proxy: proxyUrl});
       } else {
