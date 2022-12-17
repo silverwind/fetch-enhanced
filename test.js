@@ -1,9 +1,9 @@
 import fetchEnhanced, {TimeoutError} from "./index.js";
 import enableDestroy from "server-destroy";
-import http from "http";
+import http from "node:http";
 import nodeFetch from "node-fetch";
 import {fetch as undiciFetch} from "undici";
-import {promisify} from "util";
+import {promisify} from "node:util";
 import getPort from "get-port";
 import proxy from "proxy";
 

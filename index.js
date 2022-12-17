@@ -2,8 +2,8 @@ import {ProxyAgent as UndiciProxyAgent, Agent as UndiciAgent} from "undici";
 import {HttpProxyAgent, HttpsProxyAgent} from "hpagent";
 import QuickLRU from "quick-lru";
 import {getProxyForUrl} from "proxy-from-env";
-import {Agent as HttpAgent} from "http";
-import {Agent as HttpsAgent} from "https";
+import {Agent as HttpAgent} from "node:http";
+import {Agent as HttpsAgent} from "node:https";
 
 const defaultModuleOpts = {
   agentCacheSize: 512,
