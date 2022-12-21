@@ -26,9 +26,9 @@
     "proxy": "1.0.2",
     "server-destroy": "1.0.1",
     "undici": "5.14.0",
-    "updates": "13.2.4",
+    "updates": "13.2.5",
     "versions": "10.4.1",
-    "vitest": "0.25.8"
+    "vitest": "0.26.1"
   },
   "peerDependencies": {
     "undici": "*"
