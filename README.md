@@ -1,5 +1,5 @@
 # fetch-enhanced
-[![](https://img.shields.io/npm/v/fetch-enhanced.svg?style=flat)](https://www.npmjs.org/package/fetch-enhanced) [![](https://img.shields.io/npm/dm/fetch-enhanced.svg)](https://www.npmjs.org/package/fetch-enhanced)
+[![](https://img.shields.io/npm/v/fetch-enhanced.svg?style=flat)](https://www.npmjs.org/package/fetch-enhanced) [![](https://img.shields.io/npm/dm/fetch-enhanced.svg)](https://www.npmjs.org/package/fetch-enhanced) [![](https://packagephobia.com/badge?p=updates)](https://packagephobia.com/result?p=fetch-enhanced)
 
 `fetch-enhanced` wraps a provided `fetch`-like function like [undici](https://nodejs.org/dist/latest-v18.x/docs/api/globals.html#fetch) or [node-fetch](https://github.com/node-fetch/node-fetch) and adds:
 
