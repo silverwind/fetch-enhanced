@@ -1,4 +1,3 @@
-import {ProxyAgent as UndiciProxyAgent, Agent as UndiciAgent} from "undici";
 import {HttpProxyAgent, HttpsProxyAgent} from "hpagent";
 import QuickLRU from "quick-lru";
 import {getProxyForUrl} from "proxy-from-env";
@@ -27,7 +26,7 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
   const opts = {...defaultModuleOpts, ...moduleOpts};
   const agentCache = new QuickLRU({maxSize: opts.agentCacheSize});
 
-  function getAgent(url, agentOpts = {}) {
+  async function getAgent(url, agentOpts = {}) {
     const {origin, protocol} = new URL(url);
     const proxyUrl = agentOpts?.noProxy ? null : getProxyForUrl(url);
 
@@ -38,6 +37,8 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
     if ("noProxy" in agentOpts) delete agentOpts.noProxy;
 
     if (moduleOpts.undici) {
+      const {ProxyAgent: UndiciProxyAgent, Agent: UndiciAgent} = await import("undici");
+
       // https://github.com/nodejs/undici/blob/main/docs/api/Client.md#parameter-clientoptions
       const undiciOpts = {...agentOpts};
 
@@ -74,13 +75,13 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
   }
 
   const fetch = (url, {timeout = 0, agentOpts = {}, ...opts} = {}) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       // proxy
       if (!moduleOpts.undici && !("agent" in opts)) {
-        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts});
+        const agent = await getAgent(url, {...defaultAgentOpts, ...agentOpts});
         if (agent) opts.agent = agent;
       } else if (moduleOpts.undici && !("dispatcher" in opts)) {
-        const agent = getAgent(url, {...defaultAgentOpts, ...agentOpts});
+        const agent = await getAgent(url, {...defaultAgentOpts, ...agentOpts});
         if (agent) opts.dispatcher = agent;
       }
 
