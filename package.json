@@ -8,7 +8,7 @@
   "type": "module",
   "exports": "./index.js",
   "engines": {
-    "node": ">= 16"
+    "node": ">=16"
   },
   "files": [
     "index.js"
