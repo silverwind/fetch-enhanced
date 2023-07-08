@@ -19,16 +19,17 @@
     "quick-lru": "6.1.1"
   },
   "devDependencies": {
-    "eslint": "8.38.0",
-    "eslint-config-silverwind": "65.1.5",
-    "get-port": "6.1.2",
+    "eslint": "8.44.0",
+    "eslint-config-silverwind": "73.1.2",
+    "get-port": "7.0.0",
     "node-fetch": "3.3.1",
-    "proxy": "1.0.2",
+    "proxy": "2.1.1",
     "server-destroy": "1.0.1",
-    "undici": "5.21.2",
-    "updates": "14.0.0",
-    "versions": "11.0.0",
-    "vitest": "0.30.1"
+    "undici": "5.22.1",
+    "updates": "14.3.2",
+    "versions": "11.0.1",
+    "vitest": "0.33.0",
+    "vitest-config-silverwind": "2.1.0"
   },
   "peerDependencies": {
     "undici": "*"

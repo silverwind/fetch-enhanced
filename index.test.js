@@ -5,7 +5,7 @@ import nodeFetch from "node-fetch";
 import {fetch as undiciFetch} from "undici";
 import {promisify} from "node:util";
 import getPort from "get-port";
-import proxy from "proxy";
+import {createProxy} from "proxy";
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms).unref());
 
@@ -29,7 +29,7 @@ beforeAll(async () => {
   await promisify(server.listen).bind(server)(await getPort(), "127.0.0.1");
   url = makeUrl(server);
 
-  proxyServer = proxy(http.createServer());
+  proxyServer = createProxy(http.createServer());
   enableDestroy(proxyServer);
   await promisify(proxyServer.listen).bind(proxyServer)();
   proxyUrl = makeUrl(proxyServer);
