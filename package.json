@@ -11,7 +11,7 @@
     "node": ">=16"
   },
   "files": [
-    "index.js"
+    "./index.js"
   ],
   "dependencies": {
     "hpagent": "1.2.0",
@@ -38,9 +38,5 @@
     "undici": {
       "optional": true
     }
-  },
-  "keywords": [
-    "fetch",
-    "fetch-enhanced"
-  ]
+  }
 }
