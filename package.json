@@ -29,7 +29,7 @@
     "updates": "15.0.2",
     "versions": "11.1.0",
     "vitest": "0.34.6",
-    "vitest-config-silverwind": "3.0.0"
+    "vitest-config-silverwind": "5.0.0"
   },
   "peerDependencies": {
     "undici": "*"
