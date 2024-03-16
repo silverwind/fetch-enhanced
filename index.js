@@ -37,8 +37,6 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
     if ("noProxy" in agentOpts) delete agentOpts.noProxy;
 
     if (moduleOpts.undici) {
-      const {ProxyAgent: UndiciProxyAgent, Agent: UndiciAgent} = await import("undici");
-
       // https://github.com/nodejs/undici/blob/main/docs/api/Client.md#parameter-clientoptions
       const undiciOpts = {...agentOpts};
 
@@ -56,9 +54,14 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
         delete undiciOpts.maxSockets;
       }
 
-      if (proxyUrl) {
+      let UndiciProxyAgent, UndiciAgent;
+      try {
+        ({ProxyAgent: UndiciProxyAgent, Agent: UndiciAgent} = await import("undici"));
+      } catch {}
+
+      if (proxyUrl && UndiciProxyAgent) {
         agent = new UndiciProxyAgent({...undiciOpts, uri: proxyUrl});
-      } else {
+      } else if (UndiciAgent) {
         agent = new UndiciAgent(undiciOpts);
       }
     } else {
