@@ -54,10 +54,16 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
         delete undiciOpts.maxSockets;
       }
 
-      let UndiciProxyAgent, UndiciAgent;
+      let UndiciProxyAgent, UndiciAgent, hadError;
       try {
         ({ProxyAgent: UndiciProxyAgent, Agent: UndiciAgent} = await import("undici"));
-      } catch {}
+      } catch {
+        hadError = true;
+      }
+
+      if (proxyUrl && hadError) {
+        throw new Error(`Please install the "undici" package to enable proxy support`);
+      }
 
       if (proxyUrl && UndiciProxyAgent) {
         agent = new UndiciProxyAgent({...undiciOpts, uri: proxyUrl});
@@ -66,6 +72,7 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
       }
     } else {
       const isHttps = protocol === "https:";
+
       if (proxyUrl) {
         agent = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)({...agentOpts, proxy: proxyUrl});
       } else {
@@ -91,7 +98,7 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
       // timeout
       let timeoutId, controller;
       if (timeout) {
-        if (!("signal" in opts) && globalThis.AbortController) { // node 15+
+        if (!("signal" in opts) && globalThis.AbortController) {
           controller = new AbortController();
           opts.signal = controller.signal;
         }
