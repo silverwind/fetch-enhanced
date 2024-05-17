@@ -1,6 +1,6 @@
 {
   "name": "fetch-enhanced",
-  "version": "12.0.2",
+  "version": "12.1.0",
   "description": "fetch wrapper with support for automatic HTTP proxy, timeout and accessible agent options",
   "author": "silverwind",
   "repository": "silverwind/fetch-enhanced",
