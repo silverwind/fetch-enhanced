@@ -3,58 +3,73 @@ import QuickLRU from "quick-lru";
 import {getProxyForUrl} from "proxy-from-env";
 import {Agent as HttpAgent} from "node:http";
 import {Agent as HttpsAgent} from "node:https";
+import type {AgentOptions} from "node:https";
+import type {Agent as UndiciAgentType, ProxyAgent as UndiciProxyAgentType} from "undici";
 
-const defaultModuleOpts = {
-  agentCacheSize: 512,
+type FetchEnhancedRequestInput = string | URL;
+type AnyAgent = UndiciProxyAgentType | UndiciAgentType | HttpAgent | HttpsAgent;
+type AgentOpts = AgentOptions & {noProxy?: boolean};
+type AgentCache = QuickLRU<FetchEnhancedRequestInput, AnyAgent>;
+type ModuleOpts = {undici: boolean, agentCacheSize?: number};
+type ProxyUrl = string | null;
+
+type FetchOpts = RequestInit & {
+  timeout?: number,
+  agent?: AnyAgent,
+  dispatcher?: AnyAgent,
+  agentOpts?: AgentOpts,
 };
 
-const defaultAgentOpts = {
+const defaultAgentOpts: AgentOpts = {
   maxSockets: 64,
   keepAlive: false,
 };
 
 export class TimeoutError extends Error {
-  constructor(message) {
+  constructor(message: string) {
     super(message);
     this.name = "TimeoutError";
     Error.captureStackTrace?.(this, TimeoutError);
   }
 }
 
-export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
-  if (!("undici" in moduleOpts)) throw new Error(`The 'undici' option is required`);
-  const opts = {...defaultModuleOpts, ...moduleOpts};
-  const agentCache = new QuickLRU({maxSize: opts.agentCacheSize});
+const inputToUrl = (url: FetchEnhancedRequestInput) => (url instanceof URL ? url : new URL(url));
+const inputToStr = (url: FetchEnhancedRequestInput) => (url instanceof URL ? String(url) : url);
 
-  async function getAgent(url, agentOpts = {}) {
-    const {origin, protocol} = new URL(url);
-    const proxyUrl = agentOpts?.noProxy ? null : getProxyForUrl(url);
+export default function fetchEnhanced(fetchImplementation: any, {undici = false, agentCacheSize = 512}: ModuleOpts = {undici: false}) {
+  const agentCache: AgentCache = new QuickLRU({maxSize: agentCacheSize});
+
+  async function getAgent(url: FetchEnhancedRequestInput, agentOpts: AgentOpts = {}) {
+    const {origin, protocol} = inputToUrl(url);
+    const proxyUrl: ProxyUrl = agentOpts?.noProxy ? null : getProxyForUrl(url);
 
     const agentCacheKey = JSON.stringify({proxyUrl, origin, ...agentOpts});
     if (agentCache.has(agentCacheKey)) return agentCache.get(agentCacheKey);
 
-    let agent;
+    let agent: UndiciProxyAgentType | UndiciAgentType | HttpAgent | HttpsAgent;
     if ("noProxy" in agentOpts) delete agentOpts.noProxy;
 
-    if (moduleOpts.undici) {
+    if (undici) {
       // https://github.com/nodejs/undici/blob/main/docs/api/Client.md#parameter-clientoptions
-      const undiciOpts = {...agentOpts};
+      const undiciOpts: UndiciAgentType.Options = {...agentOpts as UndiciAgentType.Options};
 
       // undici supports disabling keepAlive via pipelining = 0
       if (("keepAlive" in undiciOpts) && !("pipelining" in undiciOpts)) {
-        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0;
+        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0; // eslint-disable-line etc/no-deprecated
       }
       if ("keepAlive" in undiciOpts) {
-        delete undiciOpts.keepAlive;
+        delete undiciOpts.keepAlive; // eslint-disable-line etc/no-deprecated
       }
 
       // undici supports limiting parallel sockets via connections
-      if ("maxSockets" in undiciOpts) {
+      if ("maxSockets" in undiciOpts && typeof undiciOpts.maxSockets === "number") {
         undiciOpts.connections = undiciOpts.maxSockets;
         delete undiciOpts.maxSockets;
       }
 
-      let UndiciProxyAgent, UndiciAgent, hadError;
+      let UndiciProxyAgent: any;
+      let UndiciAgent: any;
+      let hadError: boolean = false;
       try {
         ({ProxyAgent: UndiciProxyAgent, Agent: UndiciAgent} = await import("undici"));
       } catch {
@@ -84,19 +99,20 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
     return agent;
   }
 
-  const fetch = (url, {timeout = 0, agentOpts = {}, ...opts} = {}) => {
+  const fetch = (url: FetchEnhancedRequestInput, {timeout = 0, agentOpts = {}, ...opts}: FetchOpts = {}): Promise<Response> => {
     return new Promise(async (resolve, reject) => {
       // proxy
-      if (!moduleOpts.undici && !("agent" in opts)) {
+      if (!undici && !("agent" in opts)) {
         const agent = await getAgent(url, {...defaultAgentOpts, ...agentOpts});
         if (agent) opts.agent = agent;
-      } else if (moduleOpts.undici && !("dispatcher" in opts)) {
+      } else if (undici && !("dispatcher" in opts)) {
         const agent = await getAgent(url, {...defaultAgentOpts, ...agentOpts});
         if (agent) opts.dispatcher = agent;
       }
 
       // timeout
-      let timeoutId, controller;
+      let timeoutId: any;
+      let controller: AbortController;
       if (timeout) {
         if (!("signal" in opts) && globalThis.AbortController) {
           controller = new AbortController();
@@ -105,18 +121,18 @@ export default function fetchEnhanced(fetchImplementation, moduleOpts = {}) {
 
         timeoutId = setTimeout(() => {
           controller?.abort?.();
-          const err = new TimeoutError(`${opts.method || "GET"} ${url} timed out after ${timeout}ms`);
+          const err = new TimeoutError(`${opts.method || "GET"} ${inputToStr(url)} timed out after ${timeout}ms`);
           reject(err);
         }, timeout);
         timeoutId?.unref?.();
       }
 
-      fetchImplementation(url, opts).then(res => {
+      fetchImplementation(url, opts).then((res: Response) => {
         if (timeoutId) clearTimeout(timeoutId);
         resolve(res);
-      }).catch(err => {
+      }).catch((err: Error) => {
         if (timeoutId) clearTimeout(timeoutId);
-        if (err.name === "AbortError") return resolve(null);
+        if (err.name === "AbortError") return resolve(new Response());
         reject(err);
       });
     });

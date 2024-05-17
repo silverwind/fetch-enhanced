@@ -1,37 +1,47 @@
-import fetchEnhanced, {TimeoutError} from "./index.js";
+import fetchEnhanced, {TimeoutError} from "./index.ts";
 import enableDestroy from "server-destroy";
-import http from "node:http";
+import http, {Server} from "node:http";
 import nodeFetch from "node-fetch";
 import {fetch as undiciFetch} from "undici";
 import {promisify} from "node:util";
 import getPort from "get-port";
 import {createProxy} from "proxy";
+import type {ProxyServer} from "proxy";
+import type {AddressInfo} from "node:net";
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms).unref());
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms).unref());
 
-function makeUrl(server) {
-  const {port} = server.address();
+function makeUrl(server: Server) {
+  const {port} = server.address() as AddressInfo;
   return String(Object.assign(new URL("http://127.0.0.1"), {port})).replace(/\/$/, "");
 }
 
-let server, proxyServer, url, proxyUrl, serverConnects, proxyConnects;
+type DestroyableServer = Server & {destroy?: () => void};
+type DestroyableProxyServer = ProxyServer & {destroy?: () => void};
+
+let server: DestroyableServer;
+let proxyServer: DestroyableProxyServer;
+let url: string;
+let proxyUrl: string;
+let serverConnects: number;
+let proxyConnects: number;
 
 beforeAll(async () => {
   delete process.env.HTTP_PROXY;
   delete process.env.HTTPS_PROXY;
 
-  server = http.createServer(async function onRequest(_, res) {
+  server = http.createServer(async (_, res) => {
     await sleep(500);
     res.statusCode = 204;
     res.end();
   });
   enableDestroy(server);
-  await promisify(server.listen).bind(server)(await getPort(), "127.0.0.1");
+  await promisify(server.listen).bind(server)(await getPort(), "127.0.0.1"); // eslint-disable-line @typescript-eslint/unbound-method
   url = makeUrl(server);
 
   proxyServer = createProxy(http.createServer());
   enableDestroy(proxyServer);
-  await promisify(proxyServer.listen).bind(proxyServer)();
+  await promisify(proxyServer.listen).bind(proxyServer)(); // eslint-disable-line @typescript-eslint/unbound-method
   proxyUrl = makeUrl(proxyServer);
 
   process.env.HTTP_PROXY = proxyUrl;
@@ -48,7 +58,7 @@ beforeAll(async () => {
   });
 });
 
-afterAll(async () => {
+afterAll(() => {
   server.destroy();
   proxyServer.destroy();
 });

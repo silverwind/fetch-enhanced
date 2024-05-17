@@ -6,30 +6,37 @@
   "repository": "silverwind/fetch-enhanced",
   "license": "BSD-2-Clause",
   "type": "module",
-  "exports": "./index.js",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=18"
   },
-  "files": [
-    "./index.js"
-  ],
-  "dependencies": {
-    "hpagent": "1.2.0",
-    "proxy-from-env": "1.1.0",
-    "quick-lru": "7.0.0"
-  },
   "devDependencies": {
+    "@types/node": "20.12.12",
     "eslint": "8.57.0",
-    "eslint-config-silverwind": "83.0.2",
+    "eslint-config-silverwind": "85.1.2",
+    "eslint-config-silverwind-typescript": "3.2.5",
     "get-port": "7.1.0",
+    "hpagent": "1.2.0",
     "node-fetch": "3.3.2",
     "proxy": "2.1.1",
+    "proxy-from-env": "1.1.0",
+    "quick-lru": "7.0.0",
     "server-destroy": "1.0.1",
-    "undici": "6.13.0",
+    "typescript": "5.4.5",
+    "typescript-config-silverwind": "4.1.1",
+    "undici": "6.17.0",
     "updates": "16.0.1",
     "versions": "12.0.1",
-    "vitest": "1.5.0",
-    "vitest-config-silverwind": "8.0.4"
+    "vite": "5.2.11",
+    "vite-plugin-dts": "3.9.1",
+    "vitest": "1.6.0",
+    "vitest-config-silverwind": "9.0.6"
   },
   "peerDependencies": {
     "undici": "*"
