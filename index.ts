@@ -41,7 +41,7 @@ export default function fetchEnhanced(fetchImplementation: any, {undici = false,
 
   async function getAgent(url: FetchEnhancedRequestInput, agentOpts: AgentOpts = {}) {
     const {origin, protocol} = inputToUrl(url);
-    const proxyUrl: ProxyUrl = agentOpts?.noProxy ? null : getProxyForUrl(url);
+    const proxyUrl: ProxyUrl = agentOpts?.noProxy ? null : getProxyForUrl(url instanceof URL ? String(url) : url);
 
     const agentCacheKey = JSON.stringify({proxyUrl, origin, ...agentOpts});
     if (agentCache.has(agentCacheKey)) return agentCache.get(agentCacheKey);
