@@ -1,6 +1,6 @@
 import fetchEnhanced, {TimeoutError} from "./index.ts";
 import enableDestroy from "server-destroy";
-import http, {Server} from "node:http";
+import {createServer} from "node:http";
 import nodeFetch from "node-fetch";
 import {fetch as undiciFetch} from "undici";
 import {promisify} from "node:util";
@@ -8,6 +8,7 @@ import getPort from "get-port";
 import {createProxy} from "proxy";
 import type {ProxyServer} from "proxy";
 import type {AddressInfo} from "node:net";
+import type {Server} from "node:http";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms).unref());
 
@@ -30,7 +31,7 @@ beforeAll(async () => {
   delete process.env.HTTP_PROXY;
   delete process.env.HTTPS_PROXY;
 
-  server = http.createServer(async (_, res) => {
+  server = createServer(async (_, res) => {
     await sleep(500);
     res.statusCode = 204;
     res.end();
@@ -39,7 +40,7 @@ beforeAll(async () => {
   await promisify(server.listen).bind(server)(await getPort(), "127.0.0.1"); // eslint-disable-line @typescript-eslint/unbound-method
   url = makeUrl(server);
 
-  proxyServer = createProxy(http.createServer());
+  proxyServer = createProxy(createServer());
   enableDestroy(proxyServer);
   await promisify(proxyServer.listen).bind(proxyServer)(); // eslint-disable-line @typescript-eslint/unbound-method
   proxyUrl = makeUrl(proxyServer);

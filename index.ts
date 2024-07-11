@@ -13,12 +13,12 @@ type AgentCache = QuickLRU<FetchEnhancedRequestInput, AnyAgent>;
 type ModuleOpts = {undici: boolean, agentCacheSize?: number};
 type ProxyUrl = string | null;
 
-type FetchOpts = RequestInit & {
+export type FetchOpts = { // eslint-disable-line import/no-unused-modules
   timeout?: number,
   agent?: AnyAgent,
   dispatcher?: AnyAgent,
   agentOpts?: AgentOpts,
-};
+} & RequestInit;
 
 const defaultAgentOpts: AgentOpts = {
   maxSockets: 64,
@@ -55,10 +55,10 @@ export default function fetchEnhanced(fetchImplementation: any, {undici = false,
 
       // undici supports disabling keepAlive via pipelining = 0
       if (("keepAlive" in undiciOpts) && !("pipelining" in undiciOpts)) {
-        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0; // eslint-disable-line etc/no-deprecated
+        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0; // eslint-disable-line deprecation/deprecation
       }
       if ("keepAlive" in undiciOpts) {
-        delete undiciOpts.keepAlive; // eslint-disable-line etc/no-deprecated
+        delete undiciOpts.keepAlive; // eslint-disable-line deprecation/deprecation
       }
 
       // undici supports limiting parallel sockets via connections
