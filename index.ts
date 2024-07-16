@@ -6,21 +6,21 @@ import {Agent as HttpsAgent} from "node:https";
 import type {AgentOptions} from "node:https";
 import type {Agent as UndiciAgentType, ProxyAgent as UndiciProxyAgentType} from "undici";
 
-type FetchEnhancedRequestInput = string | URL;
-type AnyAgent = UndiciProxyAgentType | UndiciAgentType | HttpAgent | HttpsAgent;
-type AgentOpts = AgentOptions & {noProxy?: boolean};
-type AgentCache = QuickLRU<FetchEnhancedRequestInput, AnyAgent>;
+export type FetchEnhancedRequestInput = string | URL; // eslint-disable-line import/no-unused-modules
+export type FetchEnhancedAgent = UndiciProxyAgentType | UndiciAgentType | HttpAgent | HttpsAgent; // eslint-disable-line import/no-unused-modules
+export type FetchEnhancedAgentsOpts = AgentOptions & {noProxy?: boolean}; // eslint-disable-line import/no-unused-modules
+type AgentCache = QuickLRU<FetchEnhancedRequestInput, FetchEnhancedAgent>;
 type ModuleOpts = {undici: boolean, agentCacheSize?: number};
 type ProxyUrl = string | null;
 
 export type FetchOpts = { // eslint-disable-line import/no-unused-modules
   timeout?: number,
-  agent?: AnyAgent,
-  dispatcher?: AnyAgent,
-  agentOpts?: AgentOpts,
+  agent?: FetchEnhancedAgent,
+  dispatcher?: FetchEnhancedAgent,
+  agentOpts?: FetchEnhancedAgentsOpts,
 } & RequestInit;
 
-const defaultAgentOpts: AgentOpts = {
+const defaultAgentOpts: FetchEnhancedAgentsOpts = {
   maxSockets: 64,
   keepAlive: false,
 };
@@ -39,7 +39,7 @@ const inputToStr = (url: FetchEnhancedRequestInput) => (url instanceof URL ? Str
 export default function fetchEnhanced(fetchImplementation: any, {undici = false, agentCacheSize = 512}: ModuleOpts = {undici: false}) {
   const agentCache: AgentCache = new QuickLRU({maxSize: agentCacheSize});
 
-  async function getAgent(url: FetchEnhancedRequestInput, agentOpts: AgentOpts = {}) {
+  async function getAgent(url: FetchEnhancedRequestInput, agentOpts: FetchEnhancedAgentsOpts = {}) {
     const {origin, protocol} = inputToUrl(url);
     const proxyUrl: ProxyUrl = agentOpts?.noProxy ? null : getProxyForUrl(url instanceof URL ? String(url) : url);
 
