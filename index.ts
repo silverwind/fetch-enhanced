@@ -6,14 +6,14 @@ import {Agent as HttpsAgent} from "node:https";
 import type {AgentOptions} from "node:https";
 import type {Agent as UndiciAgentType, ProxyAgent as UndiciProxyAgentType} from "undici";
 
-export type FetchEnhancedRequestInput = string | URL; // eslint-disable-line import/no-unused-modules
-export type FetchEnhancedAgent = UndiciProxyAgentType | UndiciAgentType | HttpAgent | HttpsAgent; // eslint-disable-line import/no-unused-modules
-export type FetchEnhancedAgentsOpts = AgentOptions & {noProxy?: boolean}; // eslint-disable-line import/no-unused-modules
+export type FetchEnhancedRequestInput = string | URL;
+export type FetchEnhancedAgent = UndiciProxyAgentType | UndiciAgentType | HttpAgent | HttpsAgent;
+export type FetchEnhancedAgentsOpts = AgentOptions & {noProxy?: boolean};
 type AgentCache = QuickLRU<FetchEnhancedRequestInput, FetchEnhancedAgent>;
 type ModuleOpts = {undici: boolean, agentCacheSize?: number};
 type ProxyUrl = string | null;
 
-export type FetchOpts = { // eslint-disable-line import/no-unused-modules
+export type FetchOpts = {
   timeout?: number,
   agent?: FetchEnhancedAgent,
   dispatcher?: FetchEnhancedAgent,

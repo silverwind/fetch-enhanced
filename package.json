@@ -17,12 +17,12 @@
     "node": ">=18"
   },
   "devDependencies": {
-    "@types/node": "20.14.10",
+    "@types/node": "20.14.11",
     "@types/proxy-from-env": "1.0.4",
     "@types/server-destroy": "1.0.3",
     "eslint": "8.57.0",
-    "eslint-config-silverwind": "88.2.5",
-    "eslint-config-silverwind-typescript": "6.0.1",
+    "eslint-config-silverwind": "89.0.0",
+    "eslint-config-silverwind-typescript": "6.0.4",
     "get-port": "7.1.0",
     "hpagent": "1.2.0",
     "node-fetch": "3.3.2",

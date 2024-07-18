@@ -37,12 +37,12 @@ beforeAll(async () => {
     res.end();
   });
   enableDestroy(server);
-  await promisify(server.listen).bind(server)(await getPort(), "127.0.0.1"); // eslint-disable-line @typescript-eslint/unbound-method
+  await promisify(server.listen).bind(server)(await getPort(), "127.0.0.1");
   url = makeUrl(server);
 
   proxyServer = createProxy(createServer());
   enableDestroy(proxyServer);
-  await promisify(proxyServer.listen).bind(proxyServer)(); // eslint-disable-line @typescript-eslint/unbound-method
+  await promisify(proxyServer.listen).bind(proxyServer)();
   proxyUrl = makeUrl(proxyServer);
 
   process.env.HTTP_PROXY = proxyUrl;
