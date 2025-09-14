@@ -29,7 +29,6 @@ export class TimeoutError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "TimeoutError";
-    Error.captureStackTrace?.(this, TimeoutError);
   }
 }
 
@@ -55,10 +54,10 @@ export default function fetchEnhanced(fetchImplementation: any, {undici = false,
 
       // undici supports disabling keepAlive via pipelining = 0
       if (("keepAlive" in undiciOpts) && !("pipelining" in undiciOpts)) {
-        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0; // eslint-disable-line deprecation/deprecation
+        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0; // eslint-disable-line @typescript-eslint/no-deprecated
       }
       if ("keepAlive" in undiciOpts) {
-        delete undiciOpts.keepAlive; // eslint-disable-line deprecation/deprecation
+        delete undiciOpts.keepAlive; // eslint-disable-line @typescript-eslint/no-deprecated
       }
 
       // undici supports limiting parallel sockets via connections

@@ -37,6 +37,7 @@ beforeAll(async () => {
     res.end();
   });
   enableDestroy(server);
+  // @ts-expect-error
   await promisify(server.listen).bind(server)(await getPort(), "127.0.0.1");
   url = makeUrl(server);
 
