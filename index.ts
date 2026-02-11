@@ -36,7 +36,7 @@ const inputToUrl = (url: FetchEnhancedRequestInput) => (url instanceof URL ? url
 const inputToStr = (url: FetchEnhancedRequestInput) => (url instanceof URL ? String(url) : url);
 
 export default function fetchEnhanced(fetchImplementation: any, {undici, agentCacheSize}: ModuleOpts = {undici: false}) {
-  const agentCache: AgentCache = new QuickLRU({maxSize: agentCacheSize});
+  const agentCache: AgentCache = new QuickLRU({maxSize: agentCacheSize ?? 512});
 
   async function getAgent(url: FetchEnhancedRequestInput, agentOpts: FetchEnhancedAgentsOpts = {}) {
     const {origin, protocol} = inputToUrl(url);
