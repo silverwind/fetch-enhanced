@@ -35,7 +35,7 @@ export class TimeoutError extends Error {
 const inputToUrl = (url: FetchEnhancedRequestInput) => (url instanceof URL ? url : new URL(url));
 const inputToStr = (url: FetchEnhancedRequestInput) => (url instanceof URL ? String(url) : url);
 
-export default function fetchEnhanced(fetchImplementation: any, {undici = false, agentCacheSize = 512}: ModuleOpts = {undici: false}) {
+export default function fetchEnhanced(fetchImplementation: any, {undici, agentCacheSize}: ModuleOpts = {undici: false}) {
   const agentCache: AgentCache = new QuickLRU({maxSize: agentCacheSize});
 
   async function getAgent(url: FetchEnhancedRequestInput, agentOpts: FetchEnhancedAgentsOpts = {}) {
@@ -98,7 +98,7 @@ export default function fetchEnhanced(fetchImplementation: any, {undici = false,
     return agent;
   }
 
-  const fetch = (url: FetchEnhancedRequestInput, {timeout = 0, agentOpts = {}, ...opts}: FetchOpts = {}): Promise<Response> => {
+  const fetch = (url: FetchEnhancedRequestInput, {timeout, agentOpts, ...opts}: FetchOpts = {}): Promise<Response> => {
     return new Promise(async (resolve, reject) => {
       // proxy
       if (!undici && !("agent" in opts)) {
