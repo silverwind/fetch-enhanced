@@ -45,7 +45,7 @@ export default function fetchEnhanced(fetchImplementation: any, {undici, agentCa
     const agentCacheKey = JSON.stringify({proxyUrl, origin, ...agentOpts});
     if (agentCache.has(agentCacheKey)) return agentCache.get(agentCacheKey);
 
-    let agent: UndiciProxyAgentType | UndiciAgentType | HttpAgent | HttpsAgent;
+    let agent: UndiciProxyAgentType | UndiciAgentType | HttpAgent | HttpsAgent | undefined;
     if ("noProxy" in agentOpts) delete agentOpts.noProxy;
 
     if (undici) {
@@ -94,7 +94,9 @@ export default function fetchEnhanced(fetchImplementation: any, {undici, agentCa
       }
     }
 
-    agentCache.set(agentCacheKey, agent);
+    if (agent) {
+      agentCache.set(agentCacheKey, agent);
+    }
     return agent;
   }
 
