@@ -23,7 +23,7 @@
     "@types/server-destroy": "1.0.4",
     "@typescript/native-preview": "7.0.0-dev.20260306.1",
     "eslint": "9.39.3",
-    "eslint-config-silverwind": "122.0.2",
+    "eslint-config-silverwind": "122.0.4",
     "get-port": "7.1.0",
     "hpagent": "1.2.0",
     "jest-extended": "7.0.0",
