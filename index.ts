@@ -54,10 +54,10 @@ export default function fetchEnhanced(fetchImplementation: any, {undici, agentCa
 
       // undici supports disabling keepAlive via pipelining = 0
       if (("keepAlive" in undiciOpts) && !("pipelining" in undiciOpts)) {
-        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0; // eslint-disable-line @typescript-eslint/no-deprecated
+        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0;
       }
       if ("keepAlive" in undiciOpts) {
-        delete undiciOpts.keepAlive; // eslint-disable-line @typescript-eslint/no-deprecated
+        delete undiciOpts.keepAlive;
       }
 
       // undici supports limiting parallel sockets via connections
