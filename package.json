@@ -15,7 +15,7 @@
   ],
   "packageManager": "pnpm@10.33.0",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "devDependencies": {
     "@types/node": "25.6.0",
@@ -33,12 +33,12 @@
     "quick-lru": "7.3.0",
     "server-destroy": "1.0.1",
     "tsdown": "0.21.7",
-    "tsdown-config-silverwind": "2.0.5",
+    "tsdown-config-silverwind": "3.0.0",
     "typescript": "6.0.2",
     "typescript-config-silverwind": "17.0.0",
     "undici": "8.0.3",
     "updates": "17.15.2",
-    "updates-config-silverwind": "2.1.0",
+    "updates-config-silverwind": "3.0.0",
     "versions": "15.0.0",
     "vitest": "4.1.4",
     "vitest-config-silverwind": "11.3.3"
