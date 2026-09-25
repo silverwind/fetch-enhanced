@@ -54,11 +54,9 @@ export default function fetchEnhanced(fetchImplementation: any, {undici, agentCa
 
       // undici supports disabling keepAlive via pipelining = 0
       if (("keepAlive" in undiciOpts) && !("pipelining" in undiciOpts)) {
-        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0; // eslint-disable-line @typescript-eslint/no-deprecated
+        undiciOpts.pipelining = undiciOpts.keepAlive ? 1 : 0; // eslint-disable-line @typescript-eslint/no-deprecated -- translating the deprecated option is the point
       }
-      if ("keepAlive" in undiciOpts) {
-        delete undiciOpts.keepAlive; // eslint-disable-line @typescript-eslint/no-deprecated
-      }
+      delete undiciOpts.keepAlive; // eslint-disable-line @typescript-eslint/no-deprecated -- translated to pipelining above
 
       // undici supports limiting parallel sockets via connections
       if ("maxSockets" in undiciOpts && typeof undiciOpts.maxSockets === "number") {
@@ -80,7 +78,7 @@ export default function fetchEnhanced(fetchImplementation: any, {undici, agentCa
       }
 
       if (proxyUrl && UndiciProxyAgent) {
-        agent = new UndiciProxyAgent({...undiciOpts, uri: proxyUrl});
+        agent = new UndiciProxyAgent({...undiciOpts, uri: proxyUrl, proxyTunnel: true});
       } else if (UndiciAgent) {
         agent = new UndiciAgent(undiciOpts);
       }
@@ -128,14 +126,15 @@ export default function fetchEnhanced(fetchImplementation: any, {undici, agentCa
         timeoutId?.unref?.();
       }
 
-      fetchImplementation(url, opts).then((res: Response) => {
+      try {
+        resolve(await fetchImplementation(url, opts));
+      } catch (err) {
+        const error = err as Error;
+        if (error.name === "AbortError") resolve(new Response());
+        else reject(error);
+      } finally {
         if (timeoutId) clearTimeout(timeoutId);
-        resolve(res);
-      }).catch((err: Error) => {
-        if (timeoutId) clearTimeout(timeoutId);
-        if (err.name === "AbortError") return resolve(new Response());
-        reject(err);
-      });
+      }
     });
   };
 
