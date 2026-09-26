@@ -22,12 +22,12 @@ await fetch("https://example.com");
 ```
 
 ## API
-### fetchEnhanced(fetchImplementation, opts)
+### fetchEnhanced(fetchImplementation, [opts])
 
 - `fetchImplementation`: *Function* A `fetch`-like module that takes `(url, opts)` and an `agent` (like `node-fetch`) or `dispatcher` (like `undici`) option.
-- `opts` *Object* Required.
+- `opts` *Object*
   - `agentCacheSize`: *number* Size of the agent cache. Default: `512`.
-  - `undici`: *boolean* Whether the fetch implementation is undici. Required.
+  - `undici`: *boolean* Whether the fetch implementation is undici. Default: `false`.
 
 Returns: A wrapped `fetch` function.
 
@@ -35,8 +35,7 @@ Returns: A wrapped `fetch` function.
 
 - `opts` *Object*
   - `timeout`: *number* Request timeout in milliseconds. Default: 0 (meaning no timeout).
-  - `noProxy`: *boolean* Explicitly disable any proxy server use. Default: false.
-  - `agent`: *http.Agent* Custom HTTP agent. When specified, proxy discovery will no longer work.
+  - `agent` / `dispatcher`: Custom agent for `node-fetch` or dispatcher for `undici`. When specified, proxy discovery and `agentOpts` will no longer work.
   - `agentOpts`: *object* [Agent](https://nodejs.org/api/https.html#https_new_agent_options) or [Dispatcher](https://github.com/nodejs/undici/blob/main/docs/api/ProxyAgent.md#parameter-proxyagentoptions) [options](https://nodejs.org/api/http.html#http_new_agent_options). Default: `{maxSockets: 64, keepAlive: false}`
     - `agentOpts.noProxy`: *boolean* Do not use proxy in any case. Default: `false`.
   - Any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
@@ -58,7 +57,7 @@ try {
 
 ### fetch.clearCache()
 
-Clear the agent cache and destroys all cached agents. This is generally only necessary when the proxy environment variables are expected to change during runtime.
+Clears the agent cache and destroys all cached agents. This is generally only necessary when the proxy environment variables are expected to change during runtime.
 
 ```js
 process.env.HTTPS_PROXY = "https://proxy1.dev";
