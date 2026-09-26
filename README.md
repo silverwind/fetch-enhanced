@@ -36,7 +36,7 @@ Returns: A wrapped `fetch` function.
 - `opts` *Object*
   - `timeout`: *number* Request timeout in milliseconds. Default: 0 (meaning no timeout).
   - `agent` / `dispatcher`: Custom agent for `node-fetch` or dispatcher for `undici`. When specified, proxy discovery and `agentOpts` will no longer work.
-  - `agentOpts`: *object* [Agent](https://nodejs.org/api/https.html#https_new_agent_options) or [Dispatcher](https://github.com/nodejs/undici/blob/main/docs/api/ProxyAgent.md#parameter-proxyagentoptions) [options](https://nodejs.org/api/http.html#http_new_agent_options). Default: `{maxSockets: 64, keepAlive: false}`
+  - `agentOpts`: *object* [Agent](https://nodejs.org/api/https.html#https_new_agent_options) or [Dispatcher](https://github.com/nodejs/undici/blob/main/docs/docs/api/ProxyAgent.md#new-proxyagentoptions) [options](https://nodejs.org/api/http.html#http_new_agent_options). Default: `{maxSockets: 64, keepAlive: false}`
     - `agentOpts.noProxy`: *boolean* Do not use proxy in any case. Default: `false`.
   - Any valid `fetch` module option, like for [`node-fetch`](https://github.com/node-fetch/node-fetch#options)
 

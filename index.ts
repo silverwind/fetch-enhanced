@@ -48,7 +48,7 @@ export default function fetchEnhanced(fetchImplementation: any, {undici, agentCa
     delete agentOpts.noProxy;
 
     if (undici) {
-      // https://github.com/nodejs/undici/blob/main/docs/api/Client.md#parameter-clientoptions
+      // https://github.com/nodejs/undici/blob/main/docs/docs/api/Client.md#new-clienturl-options
       const {keepAlive, ...undiciOpts}: Record<string, any> = agentOpts;
 
       // undici supports disabling keepAlive via pipelining = 0
