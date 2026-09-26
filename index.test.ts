@@ -80,6 +80,10 @@ describe.each([
     expect(proxyConnects).toBeLessThan(serverConnects);
   });
 
+  test("invalid url rejects", async () => {
+    await expect(fetch("invalid")).rejects.toThrow("Invalid URL");
+  });
+
   test("no timeout", async () => {
     const res = await fetch(url, {method: "HEAD", timeout: 1000, agentOpts: {noProxy: true}});
     expect(res.ok).toEqual(true);

@@ -93,27 +93,27 @@ export default function fetchEnhanced(fetchImplementation: any, {undici, agentCa
 
   const fetch = (url: FetchEnhancedRequestInput, {timeout, agentOpts, ...opts}: FetchOpts = {}): Promise<Response> => {
     return new Promise(async (resolve, reject) => {
-      if (!(agentKey in opts)) {
-        const agent = await getAgent(url, {...defaultAgentOpts, ...agentOpts});
-        if (agent) opts[agentKey] = agent;
-      }
-
       let timeoutId: any;
-      let controller: AbortController | undefined;
-      if (timeout) {
-        if (!("signal" in opts)) {
-          controller = new AbortController();
-          opts.signal = controller.signal;
+      try {
+        if (!(agentKey in opts)) {
+          const agent = await getAgent(url, {...defaultAgentOpts, ...agentOpts});
+          if (agent) opts[agentKey] = agent;
         }
 
-        timeoutId = setTimeout(() => {
-          controller?.abort();
-          reject(new TimeoutError(`${opts.method || "GET"} ${inputToStr(url)} timed out after ${timeout}ms`));
-        }, timeout);
-        timeoutId.unref?.();
-      }
+        if (timeout) {
+          let controller: AbortController | undefined;
+          if (!("signal" in opts)) {
+            controller = new AbortController();
+            opts.signal = controller.signal;
+          }
 
-      try {
+          timeoutId = setTimeout(() => {
+            controller?.abort();
+            reject(new TimeoutError(`${opts.method || "GET"} ${inputToStr(url)} timed out after ${timeout}ms`));
+          }, timeout);
+          timeoutId.unref?.();
+        }
+
         resolve(await fetchImplementation(url, opts));
       } catch (err) {
         const error = err as Error;
