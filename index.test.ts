@@ -84,6 +84,10 @@ describe.each([
     await expect(fetch("invalid")).rejects.toThrow("Invalid URL");
   });
 
+  test("undefined rejection rejects", async () => {
+    await expect(fetchEnhanced(vi.fn().mockRejectedValue(undefined), {undici})(url)).rejects.toBeUndefined();
+  });
+
   test("no timeout", async () => {
     const res = await fetch(url, {method: "HEAD", timeout: 1000, agentOpts: {noProxy: true}});
     expect(res.ok).toEqual(true);

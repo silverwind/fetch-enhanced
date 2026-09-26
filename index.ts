@@ -117,7 +117,7 @@ export default function fetchEnhanced(fetchImplementation: any, {undici, agentCa
         resolve(await fetchImplementation(url, opts));
       } catch (err) {
         const error = err as Error;
-        if (error.name === "AbortError") resolve(new Response());
+        if (error?.name === "AbortError") resolve(new Response());
         else reject(error);
       } finally {
         clearTimeout(timeoutId);
