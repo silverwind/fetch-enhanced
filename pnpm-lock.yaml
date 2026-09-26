@@ -184,15 +184,9 @@ importers:
       eslint-config-silverwind:
         specifier: 151.0.1
         version: 151.0.1(eslint@10.11.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
-      get-port:
-        specifier: 7.2.0
-        version: 7.2.0
       hpagent:
         specifier: 1.2.0
         version: 1.2.0
-      jest-extended:
-        specifier: 7.0.0
-        version: 7.0.0(typescript@6.0.3)
       node-fetch:
         specifier: 3.3.2
         version: 3.3.2
@@ -1143,10 +1137,6 @@ packages:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
-
-  get-port@7.2.0:
-    resolution: {integrity: sha512-afP4W205ONCuMoPBqcR6PSXnzX35KTcJygfJfcp+QY+uwm3p20p1YczWXhlICIzGMCxYBQcySEcOgsJcrkyobg==}
-    engines: {node: '>=16'}
 
   get-tsconfig@4.14.3:
     resolution: {integrity: sha512-++QEw4DIY7WGoukz+/+A/8dGYPT9l9yIadnmSgZ8Rjr3YVSVDipQSO9CdnJo9ePqFqUUqh+wk9uIaoiAwsiPkA==}
@@ -2496,8 +2486,6 @@ snapshots:
 
   fsevents@2.3.3:
     optional: true
-
-  get-port@7.2.0: {}
 
   get-tsconfig@4.14.3:
     dependencies:
