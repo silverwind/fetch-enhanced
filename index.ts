@@ -30,9 +30,9 @@ export class TimeoutError extends Error {
   }
 }
 
-const inputToStr = (url: FetchEnhancedRequestInput) => (url instanceof URL ? String(url) : url);
+const inputToStr = (url: FetchEnhancedRequestInput) => (url instanceof URL ? url.href : url);
 
-export default function fetchEnhanced(fetchImplementation: any, {undici, agentCacheSize}: ModuleOpts = {undici: false}) {
+export default function fetchEnhanced(fetchImplementation: any, {undici, agentCacheSize}: ModuleOpts = {undici: false}): {(url: FetchEnhancedRequestInput, opts?: FetchOpts): Promise<Response>, clearCache: () => void} {
   const agentCache = new QuickLRU<string, FetchEnhancedAgent>({maxSize: agentCacheSize ?? 512});
   const agentKey = undici ? "dispatcher" : "agent";
 

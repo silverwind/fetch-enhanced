@@ -2,7 +2,7 @@
   "name": "fetch-enhanced",
   "version": "13.0.2",
   "description": "fetch wrapper with support for automatic HTTP proxy, timeout and accessible agent options",
-  "author": "silverwind",
+  "author": "silverwind <me@silverwind.io>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/silverwind/fetch-enhanced.git"
@@ -20,30 +20,6 @@
   "engines": {
     "node": ">=22"
   },
-  "devDependencies": {
-    "@types/node": "26.6.3",
-    "@types/proxy-from-env": "1.0.4",
-    "@types/server-destroy": "1.0.4",
-    "@typescript/native-preview": "7.0.0-dev.20260707.2",
-    "eslint": "10.11.0",
-    "eslint-config-silverwind": "151.0.1",
-    "hpagent": "1.2.0",
-    "node-fetch": "3.3.2",
-    "proxy": "4.1.0",
-    "proxy-from-env": "2.1.0",
-    "quick-lru": "7.3.0",
-    "server-destroy": "1.0.1",
-    "tsdown": "0.23.0",
-    "tsdown-config-silverwind": "4.1.2",
-    "typescript": "6.0.3",
-    "typescript-config-silverwind": "21.0.1",
-    "undici": "8.11.2",
-    "updates": "19.0.2",
-    "updates-config-silverwind": "4.0.7",
-    "versions": "15.5.1",
-    "vitest": "5.0.2",
-    "vitest-config-silverwind": "12.0.5"
-  },
   "peerDependencies": {
     "undici": "*"
   },
@@ -51,5 +27,28 @@
     "undici": {
       "optional": true
     }
+  },
+  "devDependencies": {
+    "@types/node": "26.6.3",
+    "@types/proxy-from-env": "1.0.4",
+    "@types/server-destroy": "1.0.4",
+    "eslint": "10.11.0",
+    "eslint-config-silverwind": "155.2.0",
+    "hpagent": "1.2.0",
+    "node-fetch": "3.3.2",
+    "proxy": "4.1.0",
+    "proxy-from-env": "2.1.0",
+    "quick-lru": "7.3.0",
+    "server-destroy": "1.0.1",
+    "tsdown": "0.23.4",
+    "tsdown-config-silverwind": "4.2.0",
+    "typescript": "7.0.2",
+    "typescript-config-silverwind": "21.0.1",
+    "undici": "8.11.2",
+    "updates": "19.0.2",
+    "updates-config-silverwind": "4.1.0",
+    "versions": "15.5.1",
+    "vitest": "5.0.2",
+    "vitest-config-silverwind": "12.0.5"
   }
 }
